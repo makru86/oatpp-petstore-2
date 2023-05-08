@@ -10,7 +10,14 @@ add_library(${project_name}-lib
         src/AppComponent.hpp
         src/controller/MyController.cpp
         src/controller/MyController.hpp
+        src/dto/ApiResponseDTO.hpp
+        src/dto/CategoryDTO.hpp
         src/dto/DTOs.hpp
+        src/dto/OrderDTO.hpp
+        src/dto/PetDTO.hpp
+        src/dto/TagDTO.hpp
+        src/dto/UserArrayDTO.hpp
+        src/dto/UserDTO.hpp
 )
 
 ## link libs

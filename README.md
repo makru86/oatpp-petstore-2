@@ -1,3 +1,12 @@
+# oatpp-petstore-2
+
+[petstore API](api/petstore.yaml) implementation using [Oatpp
+simple](https://oatpp.io/docs/simple-vs-async/) controllers.
+
+https://github.com/oatpp/oatpp/issues/331
+https://github.com/OpenAPITools/openapi-generator/pull/7903
+https://github.com/makru86/oatpp-petstore
+
 # oatpp-starter [![Build Status](https://dev.azure.com/lganzzzo/lganzzzo/_apis/build/status/oatpp.oatpp-starter?branchName=master)](https://dev.azure.com/lganzzzo/lganzzzo/_build/latest?definitionId=10&branchName=master)
 
 Starter project of oat++ (AKA oatpp) application. Based on oatpp Multithreaded (Simple) API.
