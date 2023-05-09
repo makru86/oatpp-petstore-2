@@ -11,7 +11,8 @@
  *  Data Transfer Object. Object containing fields only.
  *  Used in API for serialization/deserialization and validation
  */
-class UserDTO : public oatpp::DTO {
+class UserDTO : public oatpp::DTO
+{
   DTO_INIT(UserDTO, DTO)
 
   DTO_FIELD(Int64, id);
@@ -33,7 +34,8 @@ class UserDTO : public oatpp::DTO {
 
 #include OATPP_CODEGEN_END(DTO)
 
-inline bool operator==(const UserDTO& lhs, const UserDTO& rhs) {
+inline bool operator==(const UserDTO& lhs, const UserDTO& rhs)
+{
   auto order = [](const UserDTO& value) {
     return std::tie(value.id, value.username, value.firstName, value.lastName, value.email,
                     value.password, value.phone, value.userStatus);

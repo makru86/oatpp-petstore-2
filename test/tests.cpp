@@ -1,10 +1,23 @@
 
-#include "MyControllerTest.hpp"
-
+#include "controller/MyControllerTest.hpp"
+#include "controller/UserControllerTest.hpp"
+#include "dto/ApiResponseDTOTest.hpp"
+#include "dto/CategoryDTOTest.hpp"
+#include "dto/OrderDTOTest.hpp"
+#include "dto/PetDTOTest.hpp"
+#include "dto/TagDTOTest.hpp"
+#include "dto/UserDTOTest.hpp"
 #include <iostream>
 
 void runTests() {
+  OATPP_RUN_TEST(UserDTOTest);
+  OATPP_RUN_TEST(CategoryDTOTest);
+  OATPP_RUN_TEST(OrderDTOTest);
+  OATPP_RUN_TEST(PetDTOTest);
+  OATPP_RUN_TEST(TagDTOTest);
+  OATPP_RUN_TEST(ApiResponseDTOTest);
   OATPP_RUN_TEST(MyControllerTest);
+  OATPP_RUN_TEST(UserControllerTest);
 }
 
 int main() {

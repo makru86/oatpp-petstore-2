@@ -9,7 +9,8 @@
  *  Data Transfer Object. Object containing fields only.
  *  Used in API for serialization/deserialization and validation
  */
-class CategoryDTO : public oatpp::DTO {
+class CategoryDTO : public oatpp::DTO
+{
   DTO_INIT(CategoryDTO, DTO)
 
   DTO_FIELD(Int64, id);
@@ -19,7 +20,8 @@ class CategoryDTO : public oatpp::DTO {
 
 #include OATPP_CODEGEN_END(DTO)
 
-inline bool operator==(const CategoryDTO& lhs, const CategoryDTO& rhs) {
+inline bool operator==(const CategoryDTO& lhs, const CategoryDTO& rhs)
+{
   auto order = [](const CategoryDTO& value) { return std::tie(value.id, value.name); };
   return order(lhs) == order(rhs);
 }

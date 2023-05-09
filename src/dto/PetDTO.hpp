@@ -11,7 +11,8 @@
  *  Data Transfer Object. Object containing fields only.
  *  Used in API for serialization/deserialization and validation
  */
-class PetDTO : public oatpp::DTO {
+class PetDTO : public oatpp::DTO
+{
   DTO_INIT(PetDTO, DTO)
 
   DTO_FIELD(Int64, id);
@@ -34,7 +35,8 @@ class PetDTO : public oatpp::DTO {
 #include OATPP_CODEGEN_END(DTO)
 
 template <typename T>
-bool operator==(const oatpp::Vector<T>& lhs, const oatpp::Vector<T>& rhs) {
+bool operator==(const oatpp::Vector<T>& lhs, const oatpp::Vector<T>& rhs)
+{
   if (lhs->size() != rhs->size()) {
     return false;
   }
@@ -46,7 +48,8 @@ bool operator==(const oatpp::Vector<T>& lhs, const oatpp::Vector<T>& rhs) {
   return true;
 }
 
-inline bool operator==(const PetDTO& lhs, const PetDTO& rhs) {
+inline bool operator==(const PetDTO& lhs, const PetDTO& rhs)
+{
   // TODO std::tie is not working with oatpp::Vector
 
   auto result = lhs.id == rhs.id && lhs.category == rhs.category && lhs.name == rhs.name &&
