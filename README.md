@@ -1,4 +1,5 @@
 # oatpp-petstore-2
+# WORK IN PROGRESS
 
 Project will be used as a template to build new openapi-generator
 'cpp-oatpp-server'. Server API specified in
