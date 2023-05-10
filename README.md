@@ -1,7 +1,11 @@
 # oatpp-petstore-2
 
-[petstore API](api/petstore.yaml) implementation using [Oatpp
-simple](https://oatpp.io/docs/simple-vs-async/) controllers.
+Project will be used as a template to build new openapi-generator
+'cpp-oatpp-server'. Server API specified in
+[api/petstore.yaml](./api/petstore.yaml).
+
+[Oatpp simple](https://oatpp.io/docs/simple-vs-async/) controllers used in
+implemetation.
 
 ## Links
 - [Oatpp ticket](https://github.com/oatpp/oatpp/issues/331)
