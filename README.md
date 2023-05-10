@@ -3,13 +3,14 @@
 [petstore API](api/petstore.yaml) implementation using [Oatpp
 simple](https://oatpp.io/docs/simple-vs-async/) controllers.
 
-https://github.com/oatpp/oatpp/issues/331
-https://github.com/OpenAPITools/openapi-generator/pull/7903
-https://github.com/makru86/oatpp-petstore
+## Links
+- [Oatpp ticket](https://github.com/oatpp/oatpp/issues/331)
+- [Old openapi-generator Pull request](https://github.com/OpenAPITools/openapi-generator/pull/7903)
 
-# oatpp-starter [![Build Status](https://dev.azure.com/lganzzzo/lganzzzo/_apis/build/status/oatpp.oatpp-starter?branchName=master)](https://dev.azure.com/lganzzzo/lganzzzo/_build/latest?definitionId=10&branchName=master)
+## Curl test script
 
-Starter project of oat++ (AKA oatpp) application. Based on oatpp Multithreaded (Simple) API.
+After project is build, [./utility/test.sh](./utility/test.sh) could be
+used to start the server and test it with curl.
 
 See more:
 

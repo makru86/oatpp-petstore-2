@@ -19,15 +19,8 @@ class OrderDTO : public oatpp::DTO
   DTO_FIELD(String, shipDate);
   DTO_FIELD(String, status);
   DTO_FIELD(Boolean, complete) = false;
+
+  DTO_HC_EQ(id, petId, quantity, shipDate, status, complete);
 };
 
 #include OATPP_CODEGEN_END(DTO)
-
-inline bool operator==(const OrderDTO& lhs, const OrderDTO& rhs)
-{
-  auto order = [](const OrderDTO& value) {
-    return std::tie(value.id, value.petId, value.quantity, value.shipDate, value.status,
-                    value.complete);
-  };
-  return order(lhs) == order(rhs);
-}

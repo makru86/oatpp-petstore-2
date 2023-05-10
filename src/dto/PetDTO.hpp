@@ -16,20 +16,15 @@ class PetDTO : public oatpp::DTO
   DTO_INIT(PetDTO, DTO)
 
   DTO_FIELD(Int64, id);
-
   DTO_FIELD(Object<CategoryDTO>, category);
-
   DTO_FIELD_INFO(name) { info->required = true; }
-
   DTO_FIELD(String, name);
-
   DTO_FIELD_INFO(photoUrls) { info->required = true; }
-
   DTO_FIELD(Vector<String>, photoUrls);
-
   DTO_FIELD(Vector<Object<TagDTO>>, tags);
-
   DTO_FIELD(String, status);
+
+  //  DTO_HC_EQ(id, category, name, photoUrls, tags, status);
 };
 
 #include OATPP_CODEGEN_END(DTO)

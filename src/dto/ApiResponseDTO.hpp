@@ -16,14 +16,8 @@ class ApiResponseDTO : public oatpp::DTO
   DTO_FIELD(Int32, code);
   DTO_FIELD(String, type);
   DTO_FIELD(String, message);
+
+  DTO_HC_EQ(code, type, message);
 };
 
 #include OATPP_CODEGEN_END(DTO)
-
-inline bool operator==(const ApiResponseDTO& lhs, const ApiResponseDTO& rhs)
-{
-  auto order = [](const ApiResponseDTO& value) {
-    return std::tie(value.code, value.type, value.message);
-  };
-  return order(lhs) == order(rhs);
-}
