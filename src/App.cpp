@@ -1,4 +1,5 @@
 #include "./controller/MyController.hpp"
+#include "./controller/PetController.hpp"
 #include "./controller/UserController.hpp"
 #include "./AppComponent.hpp"
 
@@ -16,6 +17,7 @@ void run() {
 
   /* Create MyController and add all of its endpoints to router */
   router->addController(std::make_shared<MyController>());
+  router->addController(std::make_shared<PetController>());
   router->addController(std::make_shared<UserController>());
 
   /* Get connection handler component */

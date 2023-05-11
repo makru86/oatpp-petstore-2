@@ -38,7 +38,7 @@ public:
     info->addConsumes<oatpp::Vector<Object<UserDTO>>>("application/json");
   };
   ENDPOINT("POST", "/user/createWithArray", createUsersWithArrayInput,
-           BODY_DTO(oatpp::Vector<oatpp::Object<UserDTO>>, body))
+           BODY_DTO(oatpp::Vector<Object<UserDTO>>, body))
   {
     OATPP_LOGD("createUsersWithArrayInput", "");
     // TODO Add your implementation here.
@@ -51,7 +51,7 @@ public:
     info->addConsumes<oatpp::Vector<Object<UserDTO>>>("application/json");
   };
   ENDPOINT("POST", "/user/createWithList", createUsersWithListInput,
-           BODY_DTO(oatpp::Vector<oatpp::Object<UserDTO>>, body))
+           BODY_DTO(oatpp::Vector<Object<UserDTO>>, body))
   {
     OATPP_LOGD("createUsersWithListInput", "");
     // TODO Add your implementation here.
