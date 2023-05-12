@@ -296,6 +296,7 @@ paths:
                   format: binary
 
   /store/inventory:
+
     get:
       tags:
         - store
@@ -314,7 +315,9 @@ paths:
                   format: int32
       security:
         - api_key: []
+
   /store/order:
+
     post:
       tags:
         - store
@@ -340,7 +343,9 @@ paths:
               $ref: '#/components/schemas/Order'
         description: order placed for purchasing the pet
         required: true
+
   '/store/order/{orderId}':
+
     get:
       tags:
         - store
@@ -373,6 +378,7 @@ paths:
           description: Invalid ID supplied
         '404':
           description: Order not found
+
     delete:
       tags:
         - store
@@ -393,6 +399,7 @@ paths:
           description: Invalid ID supplied
         '404':
           description: Order not found
+
   /user:
     post:
       tags:

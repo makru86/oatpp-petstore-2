@@ -11,6 +11,7 @@ add_library(${project_name}-lib
         src/controller/MyController.cpp
         src/controller/MyController.hpp
         src/controller/PetController.hpp
+        src/controller/StoreController.hpp
         src/controller/UserController.hpp
         src/dto/ApiResponseDTO.hpp
         src/dto/CategoryDTO.hpp
