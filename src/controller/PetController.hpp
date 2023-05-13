@@ -1,10 +1,17 @@
 #pragma once
 
 #include "AuthorizationHandler.hpp"
+#include "dto/ApiResponseDTO.hpp"
 #include "dto/PetDTO.hpp"
 #include "oatpp/core/async/Coroutine.hpp"
 #include "oatpp/core/macro/codegen.hpp"
 #include "oatpp/core/macro/component.hpp"
+#include "oatpp/web/mime/multipart/FileProvider.hpp"
+#include "oatpp/web/mime/multipart/InMemoryDataProvider.hpp"
+#include "oatpp/web/mime/multipart/PartList.hpp"
+#include "oatpp/web/mime/multipart/Reader.hpp"
+#include "oatpp/web/protocol/http/outgoing/MultipartBody.hpp"
+#include "oatpp/web/protocol/http/outgoing/StreamingBody.hpp"
 #include "oatpp/web/server/api/ApiController.hpp"
 
 #include OATPP_CODEGEN_BEGIN(ApiController)
@@ -122,30 +129,60 @@ public:
   ENDPOINT_INFO(deletePet)
   {
     info->summary = "Deletes a pet";
-    info->pathParams.add<String>("petId");
-    // info->headers.add<String>("api_key");
+    info->pathParams.add<Int64>("petId");
   };
-  ENDPOINT("DELETE", "/pet/{petId}", deletePet, PATH(Int64, petId), HEADER(String, api_key))
+  ENDPOINT("DELETE", "/pet/{petId}", deletePet, PATH(Int64, petId))
   {
     OATPP_LOGD("deletePet", "petId=%d", petId.getValue(0))
     // TODO Add your implementation here.
     return createResponse(Status::CODE_200, "OK");
   }
 
-  //    ENDPOINT_INFO(uploadFile)
-  //    {
-  //      info->summary = "uploads an image";
-  //      info->pathParams.add<String>("petId");
-  //      info->addConsumes<MultipartBody>("multipart/form-data");
-  //    };
-  //    ENDPOINT("POST", "/pet/{petId}/uploadImage", uploadFile, PATH(String, petId),
-  //             BODY(std::shared_ptr<data::stream::InputStream>, body,
-  //                  const std::shared_ptr<const Http::IncomingRequest>&, MultipartBody))
-  //    {
-  //      OATPP_LOGD("uploadFile", "petId=%s", petId->c_str());
-  //      // TODO Add your implementation here.
-  //      return createResponse(Status::CODE_200, "OK");
-  //    }
+  ENDPOINT_INFO(uploadFile)
+  {
+    info->summary = "uploads an image";
+    info->pathParams.add<Int64>("petId");
+    // info->addConsumes<Multipart>("multipart/form-data");
+  };
+  ENDPOINT("POST", "/pet/{petId}/uploadImage", uploadFile, PATH(Int64, petId, "petId"),
+           REQUEST(std::shared_ptr<IncomingRequest>, request))
+  {
+    OATPP_LOGD("uploadFile", "petId=%d", petId.getValue(0))
+
+    namespace multipart = oatpp::web::mime::multipart;
+
+    /* Prepare multipart container. */
+    auto multipartContainer = std::make_shared<multipart::PartList>(request->getHeaders());
+
+    /* Create multipart reader. */
+    multipart::Reader multipartReader(multipartContainer.get());
+
+    /* Configure to read part with name "additionalMetadata" into memory */
+    multipartReader.setPartReader("additionalMetadata",
+                                  multipart::createInMemoryPartReader(256 /* max-data-size */));
+
+    /* Configure to stream part with name "file" to file */
+    multipartReader.setPartReader("file", multipart::createFilePartReader("/dev/null"));
+
+    /* Read multipart body */
+    request->transferBody(&multipartReader);
+
+    /* Print number of uploaded parts */
+    OATPP_LOGD("uploadFile", "parts_count=%d", multipartContainer->count())
+
+    /* Print value of "additionalMetadata" */
+    auto additionalMetadata = multipartContainer->getNamedPart("additionalMetadata");
+    OATPP_LOGD("Multipart", "additionalMetadata='%s'",
+               additionalMetadata->getPayload()->getInMemoryData()->c_str())
+
+    /* Get part by name "file"*/
+    auto filePart = multipartContainer->getNamedPart("file");
+    auto fileStream = filePart->getPayload()->openInputStream();
+    // TODO Process fileStream.
+
+    auto dto = Object<ApiResponseDTO>::createShared();
+    return createDtoResponse(Status::CODE_200, dto);
+  }
 
 };  // class PetController
 
