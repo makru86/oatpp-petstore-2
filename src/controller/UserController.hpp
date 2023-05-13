@@ -1,5 +1,6 @@
 #pragma once
 
+#include "AuthorizationHandler.hpp"
 #include "dto/UserDTO.hpp"
 #include "oatpp/core/async/Coroutine.hpp"
 #include "oatpp/core/macro/codegen.hpp"
@@ -10,7 +11,8 @@
 
 class UserController : public oatpp::web::server::api::ApiController
 {
-  typedef UserController __ControllerType;
+  std::shared_ptr<AuthorizationHandler> m_apiKeyAuthHandler =
+      std::make_shared<ApiKeyAuthorizationHandler>("My realm");
 
 public:
   explicit UserController(OATPP_COMPONENT(std::shared_ptr<ObjectMapper>, objectMapper))
@@ -27,7 +29,7 @@ public:
   };
   ENDPOINT("POST", "/user", createUser, BODY_DTO(Object<UserDTO>, body))
   {
-    OATPP_LOGD("createUser", "");
+    OATPP_LOGD("createUser", "")
     // TODO Add your implementation here.
     return createResponse(Status::CODE_200, "OK");
   }
@@ -40,7 +42,7 @@ public:
   ENDPOINT("POST", "/user/createWithArray", createUsersWithArrayInput,
            BODY_DTO(oatpp::Vector<Object<UserDTO>>, body))
   {
-    OATPP_LOGD("createUsersWithArrayInput", "");
+    OATPP_LOGD("createUsersWithArrayInput", "")
     // TODO Add your implementation here.
     return createResponse(Status::CODE_200, "OK");
   }
@@ -53,7 +55,7 @@ public:
   ENDPOINT("POST", "/user/createWithList", createUsersWithListInput,
            BODY_DTO(oatpp::Vector<Object<UserDTO>>, body))
   {
-    OATPP_LOGD("createUsersWithListInput", "");
+    OATPP_LOGD("createUsersWithListInput", "")
     // TODO Add your implementation here.
     return createResponse(Status::CODE_200, "OK");
   }
@@ -66,7 +68,7 @@ public:
   };
   ENDPOINT("GET", "/user/login", loginUser, QUERY(String, username), QUERY(String, password))
   {
-    OATPP_LOGD("loginUser", "username=%s passpword=%s", username->c_str(), password->c_str());
+    OATPP_LOGD("loginUser", "username=%s passpword=%s", username->c_str(), password->c_str())
     // TODO Add your implementation here.
     return createResponse(Status::CODE_200, "OK");
   };
@@ -74,7 +76,7 @@ public:
   ENDPOINT_INFO(logoutUser) { info->summary = "Logs out current logged in user session"; };
   ENDPOINT("GET", "/user/logout", logoutUser, HEADER(String, api_key))
   {
-    OATPP_LOGD("logoutUser", "api_key=%s", api_key->c_str());
+    OATPP_LOGD("logoutUser", "api_key=%s", api_key->c_str())
     // TODO Add your implementation here.
     return createResponse(Status::CODE_200, "OK");
   }
@@ -86,7 +88,7 @@ public:
   };
   ENDPOINT("GET", "/user/{username}", getUserByName, PATH(String, username, "username"))
   {
-    OATPP_LOGD("getUserByName", "username=%s", username->c_str());
+    OATPP_LOGD("getUserByName", "username=%s", username->c_str())
     // TODO Add your implementation here.
     auto dto = UserDTO::createShared();
     return createDtoResponse(Status::CODE_200, dto);
@@ -100,7 +102,7 @@ public:
   ENDPOINT("PUT", "/user/{username}", updateUser, PATH(String, username, "username"),
            HEADER(String, api_key), BODY_DTO(Object<UserDTO>, body))
   {
-    OATPP_LOGD("updateUser", "username=%s api_key=%s", username->c_str(), api_key->c_str());
+    OATPP_LOGD("updateUser", "username=%s api_key=%s", username->c_str(), api_key->c_str())
     // TODO Add your implementation here.
     auto dto = UserDTO::createShared();
     return createDtoResponse(Status::CODE_200, dto);
@@ -110,7 +112,7 @@ public:
   ENDPOINT("DELETE", "/user/{username}", deleteUser, PATH(String, username, "username"),
            HEADER(String, api_key))
   {
-    OATPP_LOGD("deleteUser", "username=%s api_key=%s", username->c_str(), api_key->c_str());
+    OATPP_LOGD("deleteUser", "username=%s api_key=%s", username->c_str(), api_key->c_str())
     // TODO Add your implementation here.
     return createResponse(Status::CODE_200, "OK");
   }

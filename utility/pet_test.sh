@@ -35,7 +35,7 @@ curl --fail -X GET http://localhost:8000/pet/123 \
 
 echo -n "operationId deletePet: "
 curl --fail -X DELETE http://localhost:8000/pet/123 \
-    -H "api_key: special-key" \
+    -H "Authorization: special-key" \
     && echo || exit 1
 
 # echo -n "operationId uploadFile: "

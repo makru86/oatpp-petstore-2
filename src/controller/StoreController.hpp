@@ -26,7 +26,7 @@ public:
   }
   ENDPOINT("GET", "store/inventory", getInventory)
   {
-    OATPP_LOGD("getInventory", "");
+    OATPP_LOGD("getInventory", "")
     // TODO Add your implementation here.
     return createDtoResponse(Status::CODE_200, oatpp::UnorderedFields<Int32>::createShared());
   }
@@ -43,7 +43,7 @@ public:
   ENDPOINT("POST", "/store/order", placeOrder, BODY_DTO(Object<OrderDTO>, orderDto))
   {
     // implementation of the endpoint
-    OATPP_LOGD("placeOrder", "");
+    OATPP_LOGD("placeOrder", "")
     // TODO Add your implementation here.
     return createDtoResponse(Status::CODE_200, orderDto);
   }
@@ -60,7 +60,7 @@ public:
   ENDPOINT("GET", "/store/order/{orderId}", getOrderById, PATH(Int64, orderId))
   {
     auto dto = Object<OrderDTO>::createShared();
-    OATPP_LOGD("getOrderById", "");
+    OATPP_LOGD("getOrderById", "")
     // TODO Add your implementation here.
     return createDtoResponse(Status::CODE_200, dto);
   }
@@ -75,7 +75,7 @@ public:
   }
   ENDPOINT("DELETE", "/store/order/{orderId}", deleteOrder, PATH(String, orderId))
   {
-    OATPP_LOGD("deleteOrder", "");
+    OATPP_LOGD("deleteOrder", "")
     // TODO Add your implementation here.
     return createResponse(Status::CODE_200, "OK");
   }

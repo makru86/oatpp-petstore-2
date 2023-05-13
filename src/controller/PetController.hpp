@@ -1,5 +1,6 @@
 #pragma once
 
+#include "AuthorizationHandler.hpp"
 #include "dto/PetDTO.hpp"
 #include "oatpp/core/async/Coroutine.hpp"
 #include "oatpp/core/macro/codegen.hpp"
@@ -10,6 +11,9 @@
 
 class PetController : public oatpp::web::server::api::ApiController
 {
+  std::shared_ptr<AuthorizationHandler> m_apiKeyAuthHandler =
+      std::make_shared<ApiKeyAuthorizationHandler>("My realm");
+
 public:
   explicit PetController(OATPP_COMPONENT(std::shared_ptr<ObjectMapper>, objectMapper))
     : oatpp::web::server::api::ApiController(objectMapper)
@@ -24,7 +28,7 @@ public:
   };
   ENDPOINT("POST", "/pet", addPet, BODY_DTO(Object<PetDTO>, body))
   {
-    OATPP_LOGD("addPet", "");
+    OATPP_LOGD("addPet", "")
     // TODO Add your implementation here.
     return createDtoResponse(Status::CODE_200, body);
   }
@@ -41,7 +45,7 @@ public:
   };
   ENDPOINT("PUT", "/pet", updatePet, BODY_DTO(Object<PetDTO>, body))
   {
-    OATPP_LOGD("updatePet", "");
+    OATPP_LOGD("updatePet", "")
     // TODO Add your implementation here.
     auto dto = Object<PetDTO>::createShared();
     return createDtoResponse(Status::CODE_200, dto);
@@ -56,7 +60,7 @@ public:
   };
   ENDPOINT("GET", "/pet/findByStatus", findPetsByStatus, QUERY(String, status))
   {
-    OATPP_LOGD("findPetsByStatus", "status=%s", status->c_str());
+    OATPP_LOGD("findPetsByStatus", "status=%s", status->c_str())
 
     // TODO: Implement your logic to find pets by status
 
@@ -75,7 +79,7 @@ public:
   };
   ENDPOINT("GET", "/pet/findByTags", findPetsByTags, QUERY(String, tags))
   {
-    OATPP_LOGD("findPetsByTags", "tags=%s", tags->c_str());
+    OATPP_LOGD("findPetsByTags", "tags=%s", tags->c_str())
     // TODO: Implement logic to find pets by tags.
     auto pets = oatpp::Vector<Object<PetDTO>>::createShared();
     return createDtoResponse(Status::CODE_200, pets);
@@ -85,14 +89,16 @@ public:
   {
     info->summary = "Find pet by ID";
     info->addResponse<Object<PetDTO>>(Status::CODE_200, "application/json");
-    info->addResponse<Object<PetDTO>>(Status::CODE_200, "application/xml");
     info->addResponse(Status::CODE_400, "Invalid ID supplied");
     info->addResponse(Status::CODE_404, "Pet not found");
     info->pathParams.add<String>("petId");
   };
-  ENDPOINT("GET", "/pet/{petId}", getPetById, PATH(Int64, petId))
+  ENDPOINT("GET", "/pet/{petId}", getPetById, PATH(Int64, petId),
+           AUTHORIZATION(std::shared_ptr<ApiKeyAuthorizationObject>, authObject,
+                         m_apiKeyAuthHandler))
   {
-    OATPP_LOGD("getPetById", "petId=%d", petId.getValue(0))
+    OATPP_LOGD("getPetById", "userId=%s petId=%d", authObject->userId->c_str(), petId.getValue(0))
+    //    OATPP_ASSERT_HTTP(authObject->userId != "", Status::CODE_401, "Unauthorized")
     // TODO Add your implementation here.
     auto dto = Object<PetDTO>::createShared();
     return createDtoResponse(Status::CODE_200, dto);
