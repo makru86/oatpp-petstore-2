@@ -1,21 +1,16 @@
-# oatpp-petstore-2
 # WORK IN PROGRESS
 
-Project will be used as a template to build new openapi-generator
-'cpp-oatpp-server'. Server API specified in
-[api/petstore.yaml](./api/petstore.yaml).
+# Oat++ OpenAPI Petstore starter
 
-[Oatpp simple](https://oatpp.io/docs/simple-vs-async/) controllers used in
-implemetation.
+This project extends [Oat++ starter](https://github.com/oatpp/oatpp-starter)
+by adding DTOs, controllers, and API-Key and OAuth2 security schemes as
+defined in OpenAPI [spec](api/petstore.yaml).
 
 ## Links
-- [Oatpp ticket](https://github.com/oatpp/oatpp/issues/331)
-- Old [pull request](https://github.com/OpenAPITools/openapi-generator/pull/7903) for `cpp-oatpp-server` in openapi-generator
 
-## Curl test script
-
-After this project is build, [./utility/test.sh](./utility/test.sh) could be
-used to start the server and test it with curl.
+- Petstore API example on [Swagger](https://petstore.swagger.io)
+- Work in progress [issue](https://github.com/oatpp/oatpp/issues/331)
+- Old [pull request](https://github.com/OpenAPITools/openapi-generator/pull/7903) for `cpp-oatpp-server`
 
 ## List of endpoints of OpenAPI Petstore
 
@@ -44,6 +39,16 @@ Other endpoints:
 - "DELETE", "/store/order/{orderId}"
 - "GET", "/user/login"
 - "GET", "/user/{username}"
+
+## CURL test
+
+Build and start server, then test it with the script:
+
+```
+./utility/test.sh
+```
+
+# Oat++ starter
 
 See more:
 
