@@ -1,28 +1,19 @@
 cmake_minimum_required(VERSION 3.1)
 
-set(project_name my-project) ## rename your project here
+set(project_name "OpenAPI-Petstore")
 
 project(${project_name})
 
 set(CMAKE_CXX_STANDARD 11)
 
-add_library(${project_name}-lib
-        src/AppComponent.hpp
-        src/AuthorizationHandler.hpp
-        src/controller/MyController.cpp
-        src/controller/MyController.hpp
-        src/controller/PetController.hpp
-        src/controller/StoreController.hpp
-        src/controller/UserController.hpp
-        src/dto/ApiResponseDTO.hpp
-        src/dto/CategoryDTO.hpp
-        src/dto/DTOs.hpp
-        src/dto/OrderDTO.hpp
-        src/dto/PetDTO.hpp
-        src/dto/TagDTO.hpp
-        src/dto/UserArrayDTO.hpp
-        src/dto/UserDTO.hpp
-)
+# FIXME Don't do this in oatpp-cpp-generator
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fdiagnostics-color=always")
+
+file(GLOB_RECURSE LIB_FILES
+        src/*.cpp
+        src/*.hpp
+        )
+add_library(${project_name}-lib ${LIB_FILES})
 
 ## link libs
 
@@ -32,6 +23,7 @@ target_link_libraries(${project_name}-lib
         PUBLIC oatpp::oatpp
         PUBLIC oatpp::oatpp-test
 )
+# FIXME for Swagger-UI link with oatpp::oatpp-swagger
 
 target_include_directories(${project_name}-lib PUBLIC src)
 
@@ -43,27 +35,11 @@ add_executable(${project_name}-exe
 target_link_libraries(${project_name}-exe ${project_name}-lib)
 add_dependencies(${project_name}-exe ${project_name}-lib)
 
-add_executable(${project_name}-test
-        test/tests.cpp
-        test/app/MyApiTestClient.hpp
-        test/app/TestComponent.hpp
-        test/controller/MyControllerTest.cpp
-        test/controller/MyControllerTest.hpp
-        test/controller/UserControllerTest.cpp
-        test/controller/UserControllerTest.hpp
-        test/dto/ApiResponseDTOTest.cpp
-        test/dto/ApiResponseDTOTest.hpp
-        test/dto/CategoryDTOTest.cpp
-        test/dto/CategoryDTOTest.hpp
-        test/dto/OrderDTOTest.cpp
-        test/dto/OrderDTOTest.hpp
-        test/dto/PetDTOTest.cpp
-        test/dto/PetDTOTest.hpp
-        test/dto/TagDTOTest.cpp
-        test/dto/TagDTOTest.hpp
-        test/dto/UserDTOTest.cpp
-        test/dto/UserDTOTest.hpp
-)
+file(GLOB_RECURSE TEST_FILES
+        test/*.cpp
+        test/*.hpp
+        )
+add_executable(${project_name}-test ${TEST_FILES})
 
 target_link_libraries(${project_name}-test ${project_name}-lib)
 target_include_directories(${project_name}-test PRIVATE test)

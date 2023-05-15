@@ -38,6 +38,9 @@ curl --fail -X DELETE http://localhost:8000/pet/123 \
     && echo || exit 1
 
 echo -n "operationId uploadFile: "
-curl --verbose --fail -X POST http://localhost:8000/pet/123/uploadImage \
-    -F additionalMetadata=value1 -F file=@/bin/sh \
+curl \
+    --verbose \
+    --fail -X POST http://localhost:8000/pet/123/uploadImage \
+    -F additionalMetadata=string \
+    -F file=@/bin/sh \
     && echo || exit 1
