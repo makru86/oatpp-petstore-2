@@ -24,6 +24,7 @@ public:
    */
   explicit ApiKeyAuthHandler(const oatpp::String& realm) : AuthorizationHandler("apiKey", realm) {}
 
+  // FIXME move somewhere, like src/Common.hpp
   oatpp::String protectByAsterisks(const oatpp::String& secret)
   {
     if (!secret) {
