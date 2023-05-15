@@ -1,7 +1,6 @@
 #pragma once
 
 #include "dto/OrderDTO.hpp"
-#include "oatpp/core/async/Coroutine.hpp"
 #include "oatpp/core/macro/codegen.hpp"
 #include "oatpp/core/macro/component.hpp"
 #include "oatpp/web/server/api/ApiController.hpp"
@@ -24,9 +23,9 @@ public:
     //    "application/json");
     info->addSecurityRequirement("api_key");
   }
-  ENDPOINT("GET", "store/inventory", getInventory)
+  ENDPOINT("GET", "store/inventory", getInventory, BUNDLE(String, apiKeyUserId))
   {
-    OATPP_LOGD("getInventory", "")
+    OATPP_LOGD("getInventory", "apiKeyUserId=%s", apiKeyUserId->c_str())
     // TODO Add your implementation here.
     return createDtoResponse(Status::CODE_200, oatpp::UnorderedFields<Int32>::createShared());
   }

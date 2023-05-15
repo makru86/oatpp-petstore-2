@@ -1,6 +1,5 @@
 #pragma once
 
-#include "AuthorizationHandler.hpp"
 #include "dto/UserDTO.hpp"
 #include "oatpp/core/async/Coroutine.hpp"
 #include "oatpp/core/macro/codegen.hpp"
@@ -11,9 +10,6 @@
 
 class UserController : public oatpp::web::server::api::ApiController
 {
-  std::shared_ptr<AuthorizationHandler> m_apiKeyAuthHandler =
-      std::make_shared<ApiKeyAuthorizationHandler>("My realm");
-
 public:
   explicit UserController(OATPP_COMPONENT(std::shared_ptr<ObjectMapper>, objectMapper))
     : oatpp::web::server::api::ApiController(objectMapper)

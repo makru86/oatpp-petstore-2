@@ -1,6 +1,7 @@
 #ifndef AppComponent_hpp
 #define AppComponent_hpp
 
+#include "auth/ApiKeyAuth.hpp"
 #include "oatpp/core/macro/component.hpp"
 #include "oatpp/network/tcp/server/ConnectionProvider.hpp"
 #include "oatpp/parser/json/mapping/ObjectMapper.hpp"
@@ -37,7 +38,13 @@ public:
   ([] {
     OATPP_COMPONENT(std::shared_ptr<oatpp::web::server::HttpRouter>,
                     router);  // get Router component
-    return oatpp::web::server::HttpConnectionHandler::createShared(router);
+
+    auto connectionHandler = oatpp::web::server::HttpConnectionHandler::createShared(router);
+
+    connectionHandler->addRequestInterceptor(
+        std::make_shared<ApiKeyInHeaderInterceptor>("api_key"));
+
+    return connectionHandler;
   }());
 
   /**

@@ -1,9 +1,7 @@
 #pragma once
 
-#include "AuthorizationHandler.hpp"
 #include "dto/ApiResponseDTO.hpp"
 #include "dto/PetDTO.hpp"
-#include "oatpp/core/async/Coroutine.hpp"
 #include "oatpp/core/macro/codegen.hpp"
 #include "oatpp/core/macro/component.hpp"
 #include "oatpp/web/mime/multipart/FileProvider.hpp"
@@ -18,9 +16,6 @@
 
 class PetController : public oatpp::web::server::api::ApiController
 {
-  std::shared_ptr<AuthorizationHandler> m_apiKeyAuthHandler =
-      std::make_shared<ApiKeyAuthorizationHandler>("My realm");
-
 public:
   explicit PetController(OATPP_COMPONENT(std::shared_ptr<ObjectMapper>, objectMapper))
     : oatpp::web::server::api::ApiController(objectMapper)
@@ -100,11 +95,9 @@ public:
     info->addResponse(Status::CODE_404, "Pet not found");
     info->pathParams.add<String>("petId");
   };
-  ENDPOINT("GET", "/pet/{petId}", getPetById, PATH(Int64, petId),
-           AUTHORIZATION(std::shared_ptr<ApiKeyAuthorizationObject>, authObject,
-                         m_apiKeyAuthHandler))
+  ENDPOINT("GET", "/pet/{petId}", getPetById, PATH(Int64, petId), BUNDLE(String, apiKeyUserId))
   {
-    OATPP_LOGD("getPetById", "userId=%s petId=%d", authObject->userId->c_str(), petId.getValue(0))
+    OATPP_LOGD("getPetById", "petId=%d apiKeyUserId=%s", petId.getValue(0), apiKeyUserId->c_str())
     //    OATPP_ASSERT_HTTP(authObject->userId != "", Status::CODE_401, "Unauthorized")
     // TODO Add your implementation here.
     auto dto = Object<PetDTO>::createShared();

@@ -2,6 +2,7 @@
 
 echo -n "operationId getInventory: "
 curl --fail -X GET http://localhost:8000/store/inventory \
+    -H "api_key: special-key" \
     && echo || exit 1
 
 echo -n "operationId placeOrder: "
