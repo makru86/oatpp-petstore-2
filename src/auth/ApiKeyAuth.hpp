@@ -63,21 +63,28 @@ class ApiKeyInHeaderInterceptor : public oatpp::web::server::interceptor::Reques
 {
 private:
   static constexpr const char* TAG = "ApiKeyInHeaderInterceptor";
-  ApiKeyAuthHandler m_apiKeyAuthHandler;
-  oatpp::web::server::HttpRouterTemplate<bool> m_authEndpoints;
+  std::shared_ptr<ApiKeyAuthHandler> m_apiKeyAuthHandler;
+  oatpp::web::server::HttpRouterTemplate<bool> m_skipAuthEndpoints;
   const oatpp::String m_apiKeyHeaderName;
 
 public:
-  ApiKeyInHeaderInterceptor(const oatpp::String& apiKeyHeaderName)
-    : m_apiKeyAuthHandler("My realm"), m_apiKeyHeaderName(apiKeyHeaderName)
+  ApiKeyInHeaderInterceptor(std::shared_ptr<ApiKeyAuthHandler> authHandler,
+                            const oatpp::String& apiKeyHeaderName)
+    : m_apiKeyAuthHandler(authHandler), m_apiKeyHeaderName(apiKeyHeaderName)
   {
-    m_authEndpoints.route("GET", "/pet/{petId}", true);
-    m_authEndpoints.route("GET", "/store/inventory", true);
-
-    m_authEndpoints.route("GET", "*", false);
-    m_authEndpoints.route("POST", "*", false);
-    m_authEndpoints.route("PUT", "*", false);
-    m_authEndpoints.route("DELETE", "*", false);
+    //  By default all requests are intercepted.
+    //  Skip-list of endpoints NOT requiring authentication:
+    m_skipAuthEndpoints.route("POST", "/pet", false);
+    m_skipAuthEndpoints.route("PUT", "/pet", false);
+    m_skipAuthEndpoints.route("GET", "/pet/findByStatus", false);
+    m_skipAuthEndpoints.route("GET", "/pet/findByTags", false);
+    m_skipAuthEndpoints.route("POST", "/pet/{petId}", false);
+    m_skipAuthEndpoints.route("POST", "/pet/{petId}/uploadImage", false);
+    m_skipAuthEndpoints.route("POST", "/store/order", false);
+    m_skipAuthEndpoints.route("GET", "/store/order/{orderId}", false);
+    m_skipAuthEndpoints.route("DELETE", "/store/order/{orderId}", false);
+    m_skipAuthEndpoints.route("GET", "/user/login", false);
+    m_skipAuthEndpoints.route("GET", "/user/{username}", false);
   }
 
   std::shared_ptr<OutgoingResponse> intercept(
@@ -87,7 +94,7 @@ public:
     OATPP_LOGD(TAG, "endpoint: %s %s", startingLine.method.toString()->c_str(),
                startingLine.path.toString()->c_str());
 
-    auto r = m_authEndpoints.getRoute(startingLine.method, startingLine.path);
+    auto r = m_skipAuthEndpoints.getRoute(startingLine.method, startingLine.path);
     if (r && !r.getEndpoint()) {
       OATPP_LOGD(TAG, "authorization not required");
       return nullptr;
@@ -95,15 +102,15 @@ public:
 
     auto authHeader = request->getHeader(m_apiKeyHeaderName);
     auto authObject = std::static_pointer_cast<ApiKeyAuthObject>(
-        m_apiKeyAuthHandler.handleAuthorization(authHeader));
-    if (authObject) {
-      OATPP_LOGD(TAG, "authorization granted: %s", authObject->userId->c_str());
-      request->putBundleData("apiKeyUserId", authObject->userId);
-      return nullptr;  // Continue - token is valid.
-    }
-
+        m_apiKeyAuthHandler->handleAuthorization(authHeader));
+    if (!authObject) {
     OATPP_LOGD(TAG, "authorization denied");
     throw oatpp::web::protocol::http::HttpError(oatpp::web::protocol::http::Status::CODE_401,
                                                 "Unauthorized", {});
+    }
+
+      OATPP_LOGD(TAG, "authorization granted: %s", authObject->userId->c_str());
+      request->putBundleData("apiKeyUserId", authObject->userId);
+      return nullptr;  // Continue - token is valid.
   }
 };

@@ -65,8 +65,14 @@ public:
   ENDPOINT("GET", "/user/login", loginUser, QUERY(String, username), QUERY(String, password))
   {
     OATPP_LOGD("loginUser", "username=%s passpword=%s", username->c_str(), password->c_str())
+
     // TODO Add your implementation here.
-    return createResponse(Status::CODE_200, "OK");
+
+    auto response = createResponse(Status::CODE_200, "OK");
+    response->putHeader( "Set-Cookie", "AUTH_KEY=abcde12345; Path=/; HttpOnly");
+    response->putHeader( "X-Rate-Limit", std::to_string(60));
+    response->putHeader( "X-Expires-After", std::to_string(3600));
+    return response;
   };
 
   ENDPOINT_INFO(logoutUser) { info->summary = "Logs out current logged in user session"; };

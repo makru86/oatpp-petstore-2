@@ -41,8 +41,11 @@ public:
 
     auto connectionHandler = oatpp::web::server::HttpConnectionHandler::createShared(router);
 
+    auto apiKeyAuthHandler = std::make_shared<ApiKeyAuthHandler>("My realm");
+    oatpp::String apiKeyHeaderName = "api_key";
+
     connectionHandler->addRequestInterceptor(
-        std::make_shared<ApiKeyInHeaderInterceptor>("api_key"));
+        std::make_shared<ApiKeyInHeaderInterceptor>(apiKeyAuthHandler, apiKeyHeaderName));
 
     return connectionHandler;
   }());
