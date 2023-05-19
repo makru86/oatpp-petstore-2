@@ -69,9 +69,9 @@ public:
     // TODO Add your implementation here.
 
     auto response = createResponse(Status::CODE_200, "OK");
-    response->putHeader( "Set-Cookie", "AUTH_KEY=abcde12345; Path=/; HttpOnly");
-    response->putHeader( "X-Rate-Limit", std::to_string(60));
-    response->putHeader( "X-Expires-After", std::to_string(3600));
+    response->putHeader("Set-Cookie", "AUTH_KEY=abcde12345; Path=/; HttpOnly");
+    response->putHeader("X-Rate-Limit", std::to_string(60));
+    response->putHeader("X-Expires-After", std::to_string(3600));
     return response;
   };
 

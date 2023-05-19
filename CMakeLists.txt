@@ -6,9 +6,6 @@ project(${project_name})
 
 set(CMAKE_CXX_STANDARD 11)
 
-# FIXME Don't do this in oatpp-cpp-generator
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fdiagnostics-color=always")
-
 file(GLOB_RECURSE LIB_FILES
         src/*.cpp
         src/*.hpp

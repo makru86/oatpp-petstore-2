@@ -1,5 +1,6 @@
 #pragma once
 
+#include "auth/OAuth2.hpp"
 #include "dto/ApiResponseDTO.hpp"
 #include "dto/PetDTO.hpp"
 #include "oatpp/core/macro/codegen.hpp"
@@ -28,9 +29,16 @@ public:
     info->addConsumes<Object<PetDTO>>("application/json");
     info->addResponse<Object<PetDTO>>(Status::CODE_200, "application/json");
   };
-  ENDPOINT("POST", "/pet", addPet, BODY_DTO(Object<PetDTO>, body))
+  ENDPOINT("POST", "/pet", addPet, BODY_DTO(Object<PetDTO>, body), BUNDLE(String, oauth2UserId))
+  //         BUNDLE(Boolean, oauth2ScopeReadPets), BUNDLE(Boolean, oauth2ScopeWritePets))
   {
-    OATPP_LOGD("addPet", "")
+    Boolean oauth2ScopeReadPets{true}, oauth2ScopeWritePets{true};
+    OATPP_LOGD("addPet", "authrizeation: %s: read:pets: %d write:pets: %d", oauth2UserId->c_str(),
+               oauth2ScopeReadPets.operator bool(), oauth2ScopeWritePets.operator bool())
+
+    OATPP_ASSERT_HTTP(oauth2UserId == "uid-admin" && oauth2ScopeReadPets && oauth2ScopeWritePets,
+                      Status::CODE_401, "Unauthorized")
+
     // TODO Add your implementation here.
     return createDtoResponse(Status::CODE_200, body);
   }

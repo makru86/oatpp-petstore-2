@@ -26,14 +26,18 @@ Endpoints with `apiKey` security:
 - "PUT", "/user/{username}"
 - "DELETE", "/user/{username}"
 
-Other endpoints:
+OAuth2 endpoints:
 
 - "POST", "/pet"
 - "PUT", "/pet"
 - "GET", "/pet/findByStatus"
 - "GET", "/pet/findByTags"
 - "POST", "/pet/{petId}"
+- "DELETE", "/pet/{petId}"
 - "POST", "/pet/{petId}/uploadImage"
+
+Anonymous endpoints:
+
 - "POST", "/store/order"
 - "GET", "/store/order/{orderId}"
 - "DELETE", "/store/order/{orderId}"

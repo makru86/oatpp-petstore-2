@@ -2,6 +2,7 @@
 #define AppComponent_hpp
 
 #include "auth/ApiKeyAuth.hpp"
+#include "auth/OAuth2.hpp"
 #include "oatpp/core/macro/component.hpp"
 #include "oatpp/network/tcp/server/ConnectionProvider.hpp"
 #include "oatpp/parser/json/mapping/ObjectMapper.hpp"
@@ -41,11 +42,16 @@ public:
 
     auto connectionHandler = oatpp::web::server::HttpConnectionHandler::createShared(router);
 
+    // api_key Handler
     auto apiKeyAuthHandler = std::make_shared<ApiKeyAuthHandler>("My realm");
     oatpp::String apiKeyHeaderName = "api_key";
 
     connectionHandler->addRequestInterceptor(
-        std::make_shared<ApiKeyInHeaderInterceptor>(apiKeyAuthHandler, apiKeyHeaderName));
+        std::make_shared<ApiKeyInterceptor>(apiKeyAuthHandler, apiKeyHeaderName));
+
+    // petstore_auth Handler
+    auto oauth2Handler = std::make_shared<OAuth2Handler>("My realm");
+    connectionHandler->addRequestInterceptor(std::make_shared<OAuth2Interceptor>(oauth2Handler));
 
     return connectionHandler;
   }());
