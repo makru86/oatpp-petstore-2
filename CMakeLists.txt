@@ -4,12 +4,14 @@ set(project_name "OpenAPI-Petstore")
 
 project(${project_name})
 
+# set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fdiagnostics-color=always")
+# set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -E")
+
 set(CMAKE_CXX_STANDARD 11)
 
-file(GLOB_RECURSE LIB_FILES
-        src/*.cpp
-        src/*.hpp
-        )
+#  match all C++ files in src/ and subdirectories
+file(GLOB_RECURSE LIB_FILES src/*.cpp)
+
 add_library(${project_name}-lib ${LIB_FILES})
 
 ## link libs

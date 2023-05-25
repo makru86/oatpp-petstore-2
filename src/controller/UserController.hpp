@@ -16,8 +16,6 @@ public:
   {
   }
 
-  ENDPOINT("GET", "/", root) { return createResponse(Status::CODE_200, "Hello World!"); }
-
   ENDPOINT_INFO(createUser)
   {
     info->summary = "Create user";

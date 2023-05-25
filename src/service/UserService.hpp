@@ -1,27 +1,24 @@
+#pragma once
 
-#ifndef CRUD_USERSERVICE_HPP
-#define CRUD_USERSERVICE_HPP
-
-#include "db/UserDb.hpp"
-#include "dto/PageDto.hpp"
-#include "dto/StatusDto.hpp"
-
+#include "dto/UserDto.hpp"
 #include "oatpp/web/protocol/http/Http.hpp"
-#include "oatpp/core/macro/component.hpp"
 
-class UserService {
-private:
-  typedef oatpp::web::protocol::http::Status Status;
-private:
-  OATPP_COMPONENT(std::shared_ptr<UserDb>, m_database); // Inject database component
+class UserService
+{
 public:
-
-  oatpp::Object<UserDto> createUser(const oatpp::Object<UserDto>& dto);
-  oatpp::Object<UserDto> updateUser(const oatpp::Object<UserDto>& dto);
-  oatpp::Object<UserDto> getUserById(const oatpp::Int32& id, const oatpp::provider::ResourceHandle<oatpp::orm::Connection>& connection = nullptr);
-  oatpp::Object<PageDto<oatpp::Object<UserDto>>> getAllUsers(const oatpp::UInt32& offset, const oatpp::UInt32& limit);
-  oatpp::Object<StatusDto> deleteUserById(const oatpp::Int32& id);
-
+  virtual std::shared_ptr<OutgoingResponse> createUser(const oatpp::String& userId,
+                                                       const oatpp::Object<UserDto>& dto) = 0;
+  virtual std::shared_ptr<oatpp::Vector<oatpp::Object<UserDTO>>> createUsersWithArrayInput(
+      const oatpp::String& userId, const oatpp::Vector<oatpp::Object<UserDTO>>& dto) = 0;
+  virtual std::shared_ptr<oatpp::Vector<oatpp::Object<UserDTO>>> createUsersWithListInput(
+      const oatpp::String& userId, const oatpp::Vector<oatpp::Object<UserDTO>>& dto) = 0;
+  virtual std::shared_ptr<OutgoingResponse> loginUser(const oatpp::String& username,
+                                                      const oatpp::String& password) = 0;
+  virtual std::shared_ptr<oatpp::Object<UserDTO>> getUserByName(const oatpp::String& username) = 0;
+  virtual std::shared_ptr<oatpp::Object<UserDTO>> updateUser(const oatpp::String& userId,
+                                                             const oatpp::String& username,
+                                                             const oatpp::Object<User>& user) = 0;
+  virtual std::shared_ptr<OutgoingResponse> deleteUser(const oatpp::String& userId,
+                                                       const oatpp::String& username) = 0;
+  virtual std::shared_ptr<OutgoingResponse> logoutUser(const oatpp::String& userId) = 0;
 };
-
-#endif //CRUD_USERSERVICE_HPP

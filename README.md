@@ -1,16 +1,18 @@
 # WORK IN PROGRESS
 
+- [Work in progress issue](https://github.com/oatpp/oatpp/issues/331)
+- [Old pull request](https://github.com/OpenAPITools/openapi-generator/pull/7903) for `cpp-oatpp-server`
+
 # Oat++ OpenAPI Petstore starter
 
 This project extends [Oat++ starter](https://github.com/oatpp/oatpp-starter)
 by adding DTOs, controllers, and API-Key and OAuth2 security schemes as
 defined in OpenAPI [spec](api/petstore.yaml).
 
-## Links
+## Helpful projects
 
-- Petstore API example on [Swagger](https://petstore.swagger.io)
-- Work in progress [issue](https://github.com/oatpp/oatpp/issues/331)
-- Old [pull request](https://github.com/OpenAPITools/openapi-generator/pull/7903) for `cpp-oatpp-server`
+- [Petstore API example on Swagger](https://petstore.swagger.io)
+- [Oat++ JWT auth example](https://github.com/oatpp/example-jwt)
 
 ## List of endpoints of OpenAPI Petstore
 
