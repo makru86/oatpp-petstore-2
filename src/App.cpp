@@ -1,7 +1,6 @@
 #include <iostream>
 
 #include "./AppComponent.hpp"
-#include "./controller/MyController.hpp"
 #include "./controller/PetController.hpp"
 #include "./controller/StoreController.hpp"
 #include "./controller/UserController.hpp"
