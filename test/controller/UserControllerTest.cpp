@@ -14,8 +14,10 @@ void UserControllerTest::onRun()
   /* Create client-server test runner */
   oatpp::test::web::ClientServerTestRunner runner;
 
+  auto myUserService = std::make_shared<MyUserService>();
+
   /* Add UserController endpoints to the router of the test server */
-  runner.addController(std::make_shared<UserController>());
+  runner.addController(std::make_shared<UserController>(myUserService));
 
   /* Run test */
   runner.run(

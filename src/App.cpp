@@ -15,11 +15,15 @@ void run()
   /* Get router component */
   OATPP_COMPONENT(std::shared_ptr<oatpp::web::server::HttpRouter>, router);
 
-  /* Create MyController and add all of its endpoints to router */
-  router->addController(std::make_shared<MyController>());
-  router->addController(std::make_shared<PetController>());
-  router->addController(std::make_shared<StoreController>());
-  router->addController(std::make_shared<UserController>());
+  /* Create services */
+  auto myPetService = std::make_shared<MyPetService>();
+  auto myStoreService = std::make_shared<MyStoreService>();
+  auto myUserService = std::make_shared<MyUserService>();
+
+  /* Create controllers and add all of its endpoints to router */
+  router->addController(std::make_shared<PetController>(myPetService));
+  router->addController(std::make_shared<StoreController>(myStoreService));
+  router->addController(std::make_shared<UserController>(myUserService));
 
   /* Get connection handler component */
   OATPP_COMPONENT(std::shared_ptr<oatpp::network::ConnectionHandler>, connectionHandler);

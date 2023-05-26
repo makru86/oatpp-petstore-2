@@ -53,9 +53,9 @@ public:
 
     // TODO Add your implementation here.
 
-    oatpp::String apiKeyUserId = "uid-admin";
-    OATPP_LOGD(TAG, "allow access: %s", apiKeyUserId->c_str());
-    return std::make_shared<ApiKeyAuthObject>(apiKeyUserId);
+    oatpp::String userId = "uid-admin";
+    OATPP_LOGD(TAG, "allow access: %s", userId->c_str());
+    return std::make_shared<ApiKeyAuthObject>(userId);
   }
 };
 
@@ -72,34 +72,38 @@ public:
                     const oatpp::String& apiKeyHeaderName)
     : m_apiKeyAuthHandler(authHandler), m_apiKeyHeaderName(apiKeyHeaderName)
   {
-    // Skip endpoints that does not require 'api_key' authorization
-    m_authEndpoints.route("POST", "/store/order", false);
-    m_authEndpoints.route("GET", "/store/order/{orderId}", false);
-    m_authEndpoints.route("DELETE", "/store/order/{orderId}", false);
-    m_authEndpoints.route("GET", "/user/login", false);
-    m_authEndpoints.route("GET", "/user/{username}", false);
+    // Route property is true if apiKey is required.
+    bool apiKey = true;
 
-    m_authEndpoints.route("POST", "/pet", false);
-    m_authEndpoints.route("PUT", "/pet", false);
-    m_authEndpoints.route("GET", "/pet/findByStatus", false);
-    m_authEndpoints.route("GET", "/pet/findByTags", false);
-    m_authEndpoints.route("POST", "/pet/{petId}", false);
-    m_authEndpoints.route("DELETE", "/pet/{petId}", false);
-    m_authEndpoints.route("POST", "/pet/{petId}/uploadImage", false);
+    // In oatpp the most specific routes should come first.
+    // The order matters:
+    //    GET /pet/findByStatus
+    //    GET /pet/{petId}
+    //    GET /*            <- this should be the last one
 
-    // Endpoints that require 'api_key' authorization
-    m_authEndpoints.route("GET", "/pet/{petId}", true);
-    m_authEndpoints.route("DELETE", "/pet/{petId}", true);
-    m_authEndpoints.route("GET", "/store/inventory", true);
-    m_authEndpoints.route("POST", "/user", true);
-    m_authEndpoints.route("POST", "/user/createWithArray", true);
-    m_authEndpoints.route("POST", "/user/createWithList", true);
-    m_authEndpoints.route("GET", "/user/logout", true);
-    m_authEndpoints.route("PUT", "/user/{username}", true);
-    m_authEndpoints.route("DELETE", "/user/{username}", true);
+    m_authEndpoints.route("GET", "/pet/findByStatus", not apiKey);
+    m_authEndpoints.route("GET", "/pet/findByTags", not apiKey);
+    m_authEndpoints.route("GET", "/pet/{petId}", apiKey);
+    m_authEndpoints.route("GET", "/store/inventory", apiKey);
+    m_authEndpoints.route("GET", "/store/order/{orderId}", not apiKey);
+    m_authEndpoints.route("GET", "/user/login", not apiKey);
+    m_authEndpoints.route("GET", "/user/logout", apiKey);
+    m_authEndpoints.route("GET", "/user/{username}", not apiKey);
 
-    OATPP_LOGD(TAG, "api_key endpoints:");
-    m_authEndpoints.logRouterMappings();
+    m_authEndpoints.route("POST", "/pet/{petId}/uploadImage", not apiKey);
+    m_authEndpoints.route("POST", "/pet/{petId}", not apiKey);
+    m_authEndpoints.route("POST", "/pet", not apiKey);
+    m_authEndpoints.route("POST", "/store/order", not apiKey);
+    m_authEndpoints.route("POST", "/user/createWithArray", apiKey);
+    m_authEndpoints.route("POST", "/user/createWithList", apiKey);
+    m_authEndpoints.route("POST", "/user", apiKey);
+
+    m_authEndpoints.route("PUT", "/pet", not apiKey);
+    m_authEndpoints.route("PUT", "/user/{username}", apiKey);
+
+    m_authEndpoints.route("DELETE", "/pet/{petId}", not apiKey);
+    m_authEndpoints.route("DELETE", "/store/order/{orderId}", not apiKey);
+    m_authEndpoints.route("DELETE", "/user/{username}", apiKey);
   }
 
   std::shared_ptr<OutgoingResponse> intercept(
@@ -111,10 +115,10 @@ public:
 
     auto r = m_authEndpoints.getRoute(startingLine.method, startingLine.path);
     if (!r) {
-      OATPP_LOGD(TAG, "authorization not required: no route");
+      OATPP_LOGD(TAG, "authorization not required: route not found");
       return nullptr;
     }
-    if (!r.getEndpoint()) {
+    if (r && !r.getEndpoint()) {
       OATPP_LOGD(TAG, "authorization not required: skip endpoint");
       return nullptr;
     }
@@ -129,7 +133,7 @@ public:
     }
 
     OATPP_LOGD(TAG, "authorization granted: %s", authObject->userId->c_str());
-    request->putBundleData("apiKeyUserId", authObject->userId);
+    request->putBundleData("userId", authObject->userId);
     return nullptr;  // Continue - token is valid.
   }
 };

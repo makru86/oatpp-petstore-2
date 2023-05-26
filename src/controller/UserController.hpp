@@ -5,14 +5,31 @@
 #include "oatpp/core/macro/codegen.hpp"
 #include "oatpp/core/macro/component.hpp"
 #include "oatpp/web/server/api/ApiController.hpp"
+#include "service/UserService.hpp"
 
 #include OATPP_CODEGEN_BEGIN(ApiController)
 
 class UserController : public oatpp::web::server::api::ApiController
 {
+  std::shared_ptr<UserService> m_service;
+
+  // FIXME move somewhere, like src/Common.hpp
+  oatpp::String protectByAsterisks(const oatpp::String& secret)
+  {
+    if (!secret) {
+      return "null";
+    }
+    oatpp::String result("");
+    for (auto i = 0; i != secret->size(); i++) {
+      result = result + "*";
+    }
+    return result;
+  }
+
 public:
-  explicit UserController(OATPP_COMPONENT(std::shared_ptr<ObjectMapper>, objectMapper))
-    : oatpp::web::server::api::ApiController(objectMapper)
+  explicit UserController(std::shared_ptr<UserService> userService,
+                          OATPP_COMPONENT(std::shared_ptr<ObjectMapper>, objectMapper))
+    : oatpp::web::server::api::ApiController(objectMapper), m_service(userService)
   {
   }
 
@@ -21,11 +38,10 @@ public:
     info->summary = "Create user";
     info->addConsumes<Object<UserDTO>>("application/json");
   };
-  ENDPOINT("POST", "/user", createUser, BODY_DTO(Object<UserDTO>, body))
+  ENDPOINT("POST", "/user", createUser, BODY_DTO(Object<UserDTO>, body), BUNDLE(String, userId))
   {
     OATPP_LOGD("createUser", "")
-    // TODO Add your implementation here.
-    return createResponse(Status::CODE_200, "OK");
+    return m_service->createUser(userId, body);
   }
 
   ENDPOINT_INFO(createUsersWithArrayInput)
@@ -34,11 +50,11 @@ public:
     info->addConsumes<oatpp::Vector<Object<UserDTO>>>("application/json");
   };
   ENDPOINT("POST", "/user/createWithArray", createUsersWithArrayInput,
-           BODY_DTO(oatpp::Vector<Object<UserDTO>>, body))
+           BODY_DTO(oatpp::Vector<Object<UserDTO>>, body), BUNDLE(String, userId))
   {
     OATPP_LOGD("createUsersWithArrayInput", "")
-    // TODO Add your implementation here.
-    return createResponse(Status::CODE_200, "OK");
+    auto responseDto = m_service->createUsersWithArrayInput(userId, body);
+    return createDtoResponse(Status::CODE_200, responseDto);
   }
 
   ENDPOINT_INFO(createUsersWithListInput)
@@ -47,11 +63,11 @@ public:
     info->addConsumes<oatpp::Vector<Object<UserDTO>>>("application/json");
   };
   ENDPOINT("POST", "/user/createWithList", createUsersWithListInput,
-           BODY_DTO(oatpp::Vector<Object<UserDTO>>, body))
+           BODY_DTO(oatpp::Vector<Object<UserDTO>>, body), BUNDLE(String, userId))
   {
     OATPP_LOGD("createUsersWithListInput", "")
-    // TODO Add your implementation here.
-    return createResponse(Status::CODE_200, "OK");
+    auto responseDto = m_service->createUsersWithListInput(userId, body);
+    return createDtoResponse(Status::CODE_200, responseDto);
   }
 
   ENDPOINT_INFO(loginUser)
@@ -62,23 +78,16 @@ public:
   };
   ENDPOINT("GET", "/user/login", loginUser, QUERY(String, username), QUERY(String, password))
   {
-    OATPP_LOGD("loginUser", "username=%s passpword=%s", username->c_str(), password->c_str())
-
-    // TODO Add your implementation here.
-
-    auto response = createResponse(Status::CODE_200, "OK");
-    response->putHeader("Set-Cookie", "AUTH_KEY=abcde12345; Path=/; HttpOnly");
-    response->putHeader("X-Rate-Limit", std::to_string(60));
-    response->putHeader("X-Expires-After", std::to_string(3600));
-    return response;
+    OATPP_LOGD("loginUser", "username=%s passpword=%s", username->c_str(),
+               protectByAsterisks(password)->c_str())
+    return m_service->loginUser(username, password);
   };
 
   ENDPOINT_INFO(logoutUser) { info->summary = "Logs out current logged in user session"; };
-  ENDPOINT("GET", "/user/logout", logoutUser, HEADER(String, api_key))
+  ENDPOINT("GET", "/user/logout", logoutUser, HEADER(String, api_key), BUNDLE(String, userId))
   {
     OATPP_LOGD("logoutUser", "api_key=%s", api_key->c_str())
-    // TODO Add your implementation here.
-    return createResponse(Status::CODE_200, "OK");
+    return m_service->logoutUser(userId);
   }
 
   ENDPOINT_INFO(getUserByName)
@@ -89,9 +98,8 @@ public:
   ENDPOINT("GET", "/user/{username}", getUserByName, PATH(String, username, "username"))
   {
     OATPP_LOGD("getUserByName", "username=%s", username->c_str())
-    // TODO Add your implementation here.
-    auto dto = UserDTO::createShared();
-    return createDtoResponse(Status::CODE_200, dto);
+    auto responseDto = m_service->getUserByName(username);
+    return createDtoResponse(Status::CODE_200, responseDto);
   }
 
   ENDPOINT_INFO(updateUser)
@@ -100,21 +108,19 @@ public:
     info->addConsumes<Object<UserDTO>>("application/json");
   };
   ENDPOINT("PUT", "/user/{username}", updateUser, PATH(String, username, "username"),
-           HEADER(String, api_key), BODY_DTO(Object<UserDTO>, body))
+           HEADER(String, api_key), BODY_DTO(Object<UserDTO>, dto), BUNDLE(String, userId))
   {
     OATPP_LOGD("updateUser", "username=%s api_key=%s", username->c_str(), api_key->c_str())
-    // TODO Add your implementation here.
-    auto dto = UserDTO::createShared();
-    return createDtoResponse(Status::CODE_200, dto);
+    auto responseDto = m_service->updateUser(userId, username, dto);
+    return createDtoResponse(Status::CODE_200, responseDto);
   }
 
   ENDPOINT_INFO(deleteUser) { info->summary = "Delete user"; };
   ENDPOINT("DELETE", "/user/{username}", deleteUser, PATH(String, username, "username"),
-           HEADER(String, api_key))
+           HEADER(String, api_key), BUNDLE(String, userId))
   {
     OATPP_LOGD("deleteUser", "username=%s api_key=%s", username->c_str(), api_key->c_str())
-    // TODO Add your implementation here.
-    return createResponse(Status::CODE_200, "OK");
+    return m_service->deleteUser(userId, username);
   }
 
 };  // class UserController

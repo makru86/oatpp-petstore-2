@@ -11,7 +11,7 @@ struct OAuth2Object : oatpp::web::server::handler::AuthorizationObject {
   explicit OAuth2Object(const oatpp::String& pUserId, bool scopeReadPets, bool scopeWritePets)
     : userId(pUserId), scopeReadPets(scopeReadPets), scopeWritePets(scopeWritePets)
   {
-    OATPP_LOGD(TAG, "authorized: %s: read:pets: %d write:pets: %d", userId->c_str(), scopeReadPets,
+    OATPP_LOGD(TAG, "userId: %s: read:pets: %d write:pets: %d", userId->c_str(), scopeReadPets,
                scopeWritePets);
   }
 
@@ -75,22 +75,22 @@ private:
 public:
   OAuth2Interceptor(std::shared_ptr<OAuth2Handler> authHandler) : m_oauth2Handler(authHandler)
   {
-    // Skip endpoints that does not require oauth2 authorization.
-    m_authEndpoints.route("POST", "/store/order", false);
-    m_authEndpoints.route("GET", "/store/order/{orderId}", false);
-    m_authEndpoints.route("DELETE", "/store/order/{orderId}", false);
-    m_authEndpoints.route("GET", "/user/login", false);
-    m_authEndpoints.route("GET", "/user/{username}", false);
-
-    m_authEndpoints.route("GET", "/pet/{petId}", false);
-    m_authEndpoints.route("DELETE", "/pet/{petId}", false);
-    m_authEndpoints.route("GET", "/store/inventory", false);
-    m_authEndpoints.route("POST", "/user", false);
-    m_authEndpoints.route("POST", "/user/createWithArray", false);
-    m_authEndpoints.route("POST", "/user/createWithList", false);
-    m_authEndpoints.route("GET", "/user/logout", false);
-    m_authEndpoints.route("PUT", "/user/{username}", false);
-    m_authEndpoints.route("DELETE", "/user/{username}", false);
+    //    // Skip endpoints that does not require oauth2 authorization.
+    //    m_authEndpoints.route("POST", "/store/order", false);
+    //    m_authEndpoints.route("GET", "/store/order/{orderId}", false);
+    //    m_authEndpoints.route("DELETE", "/store/order/{orderId}", false);
+    //    m_authEndpoints.route("GET", "/user/login", false);
+    //    m_authEndpoints.route("GET", "/user/{username}", false);
+    //
+    //    m_authEndpoints.route("GET", "/pet/{petId}", false);
+    //    m_authEndpoints.route("DELETE", "/pet/{petId}", false);
+    //    m_authEndpoints.route("GET", "/store/inventory", false);
+    //    m_authEndpoints.route("POST", "/user", false);
+    //    m_authEndpoints.route("POST", "/user/createWithArray", false);
+    //    m_authEndpoints.route("POST", "/user/createWithList", false);
+    //    m_authEndpoints.route("GET", "/user/logout", false);
+    //    m_authEndpoints.route("PUT", "/user/{username}", false);
+    //    m_authEndpoints.route("DELETE", "/user/{username}", false);
 
     // Set endpoints that require oauth2 authorization.
     m_authEndpoints.route("POST", "/pet", true);
@@ -101,6 +101,14 @@ public:
     m_authEndpoints.route("DELETE", "/pet/{petId}", true);
     m_authEndpoints.route("POST", "/pet/{petId}/uploadImage", true);
 
+    // Set all other endpoints not require oauth2 authorization.
+    m_authEndpoints.route("GET", "/*", false);
+    m_authEndpoints.route("POST", "/*", false);
+    m_authEndpoints.route("PUT", "/*", false);
+    m_authEndpoints.route("DELETE", "/*", false);
+    m_authEndpoints.route("PATCH", "/*", false);
+    m_authEndpoints.route("OPTIONS", "/*", false);
+
     OATPP_LOGD(TAG, "petstore_auth endpoints:");
     m_authEndpoints.logRouterMappings();
   }
@@ -108,16 +116,16 @@ public:
   std::shared_ptr<OutgoingResponse> intercept(
       const std::shared_ptr<IncomingRequest>& request) override
   {
-    auto startingLine = request->getStartingLine();
-    OATPP_LOGD(TAG, "endpoint: %s %s", startingLine.method.toString()->c_str(),
-               startingLine.path.toString()->c_str());
+    auto method = request->getStartingLine().method.toString();
+    auto path = request->getStartingLine().path.toString();
+    OATPP_LOGD(TAG, "endpoint: %s %s", method->c_str(), path->c_str());
 
-    auto r = m_authEndpoints.getRoute(startingLine.method, startingLine.path);
-    if (!r) {
+    auto route = m_authEndpoints.getRoute(method, path);
+    if (!route) {
       OATPP_LOGD(TAG, "authorization not required: no route");
       return nullptr;
     }
-    if (!r.getEndpoint()) {
+    if (!route.getEndpoint()) {
       OATPP_LOGD(TAG, "authorization not required: skip endpoint");
       return nullptr;
     }
@@ -131,10 +139,10 @@ public:
                                                   "Unauthorized", {});
     }
 
-    OATPP_LOGD(TAG, "authorization granted: %s", oauth2Object->userId->c_str());
-    request->putBundleData("oauth2UserId", oauth2Object->userId);
-    request->putBundleData("oauth2scopeReadPets", oauth2Object->scopeReadPets);
-    request->putBundleData("oauth2scopeWritePets", oauth2Object->scopeWritePets);
+    request->putBundleData("userId", oauth2Object->userId);
+    request->putBundleData("scopeReadPets", oauth2Object->scopeReadPets);
+    request->putBundleData("scopeWritePets", oauth2Object->scopeWritePets);
+    OATPP_LOGD(TAG, "authorization granted");
     return nullptr;  // Continue - token is valid.
   }
 };

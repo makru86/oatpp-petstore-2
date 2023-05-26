@@ -4,14 +4,18 @@
 #include "oatpp/core/macro/codegen.hpp"
 #include "oatpp/core/macro/component.hpp"
 #include "oatpp/web/server/api/ApiController.hpp"
+#include "service/StoreService.hpp"
 
 #include OATPP_CODEGEN_BEGIN(ApiController)
 
 class StoreController : public oatpp::web::server::api::ApiController
 {
+  std::shared_ptr<StoreService> m_service;
+
 public:
-  explicit StoreController(OATPP_COMPONENT(std::shared_ptr<ObjectMapper>, objectMapper))
-    : oatpp::web::server::api::ApiController(objectMapper)
+  explicit StoreController(std::shared_ptr<StoreService> storeService,
+                           OATPP_COMPONENT(std::shared_ptr<ObjectMapper>, objectMapper))
+    : oatpp::web::server::api::ApiController(objectMapper), m_service(storeService)
   {
   }
 
@@ -23,11 +27,11 @@ public:
     //    "application/json");
     info->addSecurityRequirement("api_key");
   }
-  ENDPOINT("GET", "store/inventory", getInventory, BUNDLE(String, apiKeyUserId))
+  ENDPOINT("GET", "store/inventory", getInventory, BUNDLE(String, userId))
   {
-    OATPP_LOGD("getInventory", "apiKeyUserId=%s", apiKeyUserId->c_str())
-    // TODO Add your implementation here.
-    return createDtoResponse(Status::CODE_200, oatpp::UnorderedFields<Int32>::createShared());
+    OATPP_LOGD("getInventory", "userId=%s", userId->c_str())
+    auto responseDto = m_service->getInventory(userId);
+    return createDtoResponse(Status::CODE_200, responseDto);
   }
 
   // Place an order
@@ -41,10 +45,9 @@ public:
   }
   ENDPOINT("POST", "/store/order", placeOrder, BODY_DTO(Object<OrderDTO>, orderDto))
   {
-    // implementation of the endpoint
     OATPP_LOGD("placeOrder", "")
-    // TODO Add your implementation here.
-    return createDtoResponse(Status::CODE_200, orderDto);
+    auto responseDto = m_service->placeOrder(orderDto);
+    return createDtoResponse(Status::CODE_200, responseDto);
   }
 
   // Get an order by ID
@@ -58,10 +61,9 @@ public:
   }
   ENDPOINT("GET", "/store/order/{orderId}", getOrderById, PATH(Int64, orderId))
   {
-    auto dto = Object<OrderDTO>::createShared();
     OATPP_LOGD("getOrderById", "")
-    // TODO Add your implementation here.
-    return createDtoResponse(Status::CODE_200, dto);
+    auto responseDto = m_service->getOrderById(orderId);
+    return createDtoResponse(Status::CODE_200, responseDto);
   }
 
   // Delete an order by ID
@@ -75,8 +77,7 @@ public:
   ENDPOINT("DELETE", "/store/order/{orderId}", deleteOrder, PATH(String, orderId))
   {
     OATPP_LOGD("deleteOrder", "")
-    // TODO Add your implementation here.
-    return createResponse(Status::CODE_200, "OK");
+    return m_service->deleteOrder(orderId);
   }
 
 };  // class StoreController

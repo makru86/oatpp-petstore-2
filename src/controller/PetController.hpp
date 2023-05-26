@@ -21,7 +21,7 @@ class PetController : public oatpp::web::server::api::ApiController
   std::shared_ptr<PetService> m_service;
 
 public:
-  explicit PetController(OATPP_COMPONENT(std::shared_ptr<PetService>, petService),
+  explicit PetController(std::shared_ptr<PetService> petService,
                          OATPP_COMPONENT(std::shared_ptr<ObjectMapper>, objectMapper))
     : oatpp::web::server::api::ApiController(objectMapper), m_service(petService)
   {
@@ -33,15 +33,16 @@ public:
     info->addConsumes<Object<PetDTO>>("application/json");
     info->addResponse<Object<PetDTO>>(Status::CODE_200, "application/json");
   };
-  ENDPOINT("POST", "/pet", addPet, BODY_DTO(Object<PetDTO>, dto), BUNDLE(String, oauth2UserId),
-           BUNDLE(Boolean, oauth2ScopeReadPets), BUNDLE(Boolean, oauth2ScopeWritePets))
+  ENDPOINT("POST", "/pet", addPet, BODY_DTO(Object<PetDTO>, dto), BUNDLE(String, userId),
+           BUNDLE(Boolean, scopeReadPets), BUNDLE(Boolean, scopeWritePets))
   {
-    OATPP_LOGD("addPet", "authrizeation: %s: read:pets: %d write:pets: %d", oauth2UserId->c_str(),
-               oauth2ScopeReadPets.operator bool(), oauth2ScopeWritePets.operator bool())
-    OATPP_ASSERT_HTTP(oauth2ScopeReadPets && oauth2ScopeWritePets, Status::CODE_401, "Unauthorized")
-    auto responseDto = m_service->addPet(oauth2UserId, dto);
+    OATPP_LOGD("addPet", "authorization: %s: read:pets: %d write:pets: %d", userId->c_str(),
+               scopeReadPets.operator bool(), scopeWritePets.operator bool())
+    OATPP_LOGD("addPet", "%d", scopeReadPets && scopeWritePets);
+
+    OATPP_ASSERT_HTTP(scopeReadPets && scopeWritePets, Status::CODE_401, "Unauthorized")
+    auto responseDto = m_service->addPet(userId, dto);
     return createDtoResponse(Status::CODE_200, responseDto);
-    //        auto pets = oatpp::Vector<Object<PetDTO>>::createShared();
   }
 
   ENDPOINT_INFO(updatePet)
@@ -54,11 +55,11 @@ public:
     info->addResponse(Status::CODE_404, "Pet not found");
     info->addResponse(Status::CODE_405, "Validation exception");
   };
-  ENDPOINT("PUT", "/pet", updatePet, BODY_DTO(Object<PetDTO>, dto), BUNDLE(String, oauth2UserId),
-           BUNDLE(Boolean, oauth2ScopeReadPets), BUNDLE(Boolean, oauth2ScopeWritePets))
+  ENDPOINT("PUT", "/pet", updatePet, BODY_DTO(Object<PetDTO>, dto), BUNDLE(String, userId),
+           BUNDLE(Boolean, scopeReadPets), BUNDLE(Boolean, scopeWritePets))
   {
     OATPP_LOGD("updatePet", "")
-    auto responseDto = m_service->updatePet(oauth2UserId, dto);
+    auto responseDto = m_service->updatePet(userId, dto);
     return createDtoResponse(Status::CODE_200, responseDto);
   };
 
@@ -70,11 +71,10 @@ public:
     info->queryParams.add<String>("status");
   };
   ENDPOINT("GET", "/pet/findByStatus", findPetsByStatus, QUERY(String, status),
-           BUNDLE(String, oauth2UserId), BUNDLE(Boolean, oauth2ScopeReadPets),
-           BUNDLE(Boolean, oauth2ScopeWritePets))
+           BUNDLE(String, userId), BUNDLE(Boolean, scopeReadPets), BUNDLE(Boolean, scopeWritePets))
   {
     OATPP_LOGD("findPetsByStatus", "status=%s", status->c_str())
-    auto responseDto = m_service->findPetsByStatus(oauth2UserId, status);
+    auto responseDto = m_service->findPetsByStatus(userId, status);
     return createDtoResponse(Status::CODE_200, responseDto);
   }
 
@@ -86,12 +86,11 @@ public:
         "testing.";
     info->queryParams.add<String>("tags");
   };
-  ENDPOINT("GET", "/pet/findByTags", findPetsByTags, QUERY(String, tags),
-           BUNDLE(String, oauth2UserId), BUNDLE(Boolean, oauth2ScopeReadPets),
-           BUNDLE(Boolean, oauth2ScopeWritePets))
+  ENDPOINT("GET", "/pet/findByTags", findPetsByTags, QUERY(String, tags), BUNDLE(String, userId),
+           BUNDLE(Boolean, scopeReadPets), BUNDLE(Boolean, scopeWritePets))
   {
     OATPP_LOGD("findPetsByTags", "tags=%s", tags->c_str())
-    auto responseDto = m_service->findPetsByTags(oauth2UserId, tags);
+    auto responseDto = m_service->findPetsByTags(userId, tags);
     return createDtoResponse(Status::CODE_200, responseDto);
   }
 
@@ -103,13 +102,11 @@ public:
     info->addResponse(Status::CODE_404, "Pet not found");
     info->pathParams.add<String>("petId");
   };
-  ENDPOINT("GET", "/pet/{petId}", getPetById, PATH(Int64, petId), BUNDLE(String, apiKeyUserId))
+  ENDPOINT("GET", "/pet/{petId}", getPetById, PATH(Int64, petId), BUNDLE(String, userId))
   {
-    OATPP_LOGD("getPetById", "petId=%d apiKeyUserId=%s", petId.getValue(0), apiKeyUserId->c_str())
-    //    OATPP_ASSERT_HTTP(authObject->userId != "", Status::CODE_401, "Unauthorized")
-    // TODO Add your implementation here.
-    auto dto = Object<PetDTO>::createShared();
-    return createDtoResponse(Status::CODE_200, dto);
+    OATPP_LOGD("getPetById", "petId=%d userId=%s", petId.getValue(0), userId->c_str())
+    auto responseDto = m_service->getPetById(userId, petId);
+    return createDtoResponse(Status::CODE_200, responseDto);
   }
 
   //  ENDPOINT_INFO(updatePetWithForm)
@@ -120,8 +117,8 @@ public:
   //    // info->security.append("petstore_auth", {"write:pets", "read:pets"});
   //  };
   //  ENDPOINT("POST", "/pet/{petId}", updatePetWithForm, PATH(Int32, petId),
-  // BUNDLE(String, oauth2UserId),
-  // BUNDLE(Boolean, oauth2ScopeReadPets), BUNDLE(Boolean, oauth2ScopeWritePets))
+  // BUNDLE(String, userId),
+  // BUNDLE(Boolean, scopeReadPets), BUNDLE(Boolean, scopeWritePets))
   //           BODY_STRING(String, dto))
   //  {
   //    OATPP_LOGD("updatePetWithForm", "petId=%s, dto=%s", petId->c_str(), dto->c_str());
@@ -134,12 +131,11 @@ public:
     info->summary = "Deletes a pet";
     info->pathParams.add<Int64>("petId");
   };
-  ENDPOINT("DELETE", "/pet/{petId}", deletePet, PATH(Int64, petId), BUNDLE(String, oauth2UserId),
-           BUNDLE(Boolean, oauth2ScopeReadPets), BUNDLE(Boolean, oauth2ScopeWritePets))
+  ENDPOINT("DELETE", "/pet/{petId}", deletePet, PATH(Int64, petId), BUNDLE(String, userId),
+           BUNDLE(Boolean, scopeReadPets), BUNDLE(Boolean, scopeWritePets))
   {
     OATPP_LOGD("deletePet", "petId=%d", petId.getValue(0))
-    // TODO Add your implementation here.
-    return createResponse(Status::CODE_200, "OK");
+    return m_service->deletePet(userId, petId);
   }
 
   ENDPOINT_INFO(uploadFile)
@@ -149,8 +145,8 @@ public:
     // info->addConsumes<Multipart>("multipart/form-data");
   };
   ENDPOINT("POST", "/pet/{petId}/uploadImage", uploadFile, PATH(Int64, petId, "petId"),
-           REQUEST(std::shared_ptr<IncomingRequest>, request), BUNDLE(String, oauth2UserId),
-           BUNDLE(Boolean, oauth2ScopeReadPets), BUNDLE(Boolean, oauth2ScopeWritePets))
+           REQUEST(std::shared_ptr<IncomingRequest>, request), BUNDLE(String, userId),
+           BUNDLE(Boolean, scopeReadPets), BUNDLE(Boolean, scopeWritePets))
   {
     OATPP_LOGD("uploadFile", "petId=%d", petId.getValue(0))
 
@@ -176,17 +172,17 @@ public:
     OATPP_LOGD("uploadFile", "parts_count=%d", multipartContainer->count())
 
     /* Print value of "additionalMetadata" */
-    auto additionalMetadata = multipartContainer->getNamedPart("additionalMetadata");
-    OATPP_LOGD("Multipart", "additionalMetadata='%s'",
-               additionalMetadata->getPayload()->getInMemoryData()->c_str())
+    oatpp::String additionalMetadata =
+        multipartContainer->getNamedPart("additionalMetadata")->getPayload()->getInMemoryData();
+    OATPP_LOGD("Multipart", "additionalMetadata='%s'", additionalMetadata->c_str())
 
     /* Get part by name "file"*/
     auto filePart = multipartContainer->getNamedPart("file");
     auto fileStream = filePart->getPayload()->openInputStream();
     // TODO Process fileStream.
 
-    auto dto = Object<ApiResponseDTO>::createShared();
-    return createDtoResponse(Status::CODE_200, dto);
+    auto responseDto = m_service->uploadFile(userId, petId, additionalMetadata, fileStream);
+    return createDtoResponse(Status::CODE_200, responseDto);
   }
 
 };  // class PetController
