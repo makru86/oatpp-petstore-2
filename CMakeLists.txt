@@ -26,23 +26,26 @@ target_link_libraries(${project_name}-lib
 
 target_include_directories(${project_name}-lib PUBLIC src)
 
-## add executables
+## executable
 
-add_executable(${project_name}-exe
-        src/App.cpp
-        test/app/MyApiTestClient.hpp)
+add_executable(${project_name}-exe src/App.cpp)
 target_link_libraries(${project_name}-exe ${project_name}-lib)
 add_dependencies(${project_name}-exe ${project_name}-lib)
 
-file(GLOB_RECURSE TEST_FILES
-        test/*.cpp
-        test/*.hpp
-        )
-add_executable(${project_name}-test ${TEST_FILES})
+## test
 
+#  match all C++ files in test/ and subdirectories
+file(GLOB_RECURSE TEST_FILES test/*.cpp)
+
+add_executable(${project_name}-test ${TEST_FILES})
 target_link_libraries(${project_name}-test ${project_name}-lib)
 target_include_directories(${project_name}-test PRIVATE test)
 add_dependencies(${project_name}-test ${project_name}-lib)
+
+enable_testing()
+add_test(project-tests ${project_name}-test)
+
+## set target properties
 
 set_target_properties(${project_name}-lib ${project_name}-exe ${project_name}-test PROPERTIES
         CXX_STANDARD 11
@@ -50,5 +53,3 @@ set_target_properties(${project_name}-lib ${project_name}-exe ${project_name}-te
         CXX_STANDARD_REQUIRED ON
 )
 
-enable_testing()
-add_test(project-tests ${project_name}-test)

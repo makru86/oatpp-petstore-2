@@ -14,10 +14,10 @@ void UserControllerTest::onRun()
   /* Create client-server test runner */
   oatpp::test::web::ClientServerTestRunner runner;
 
-  auto myUserService = std::make_shared<MyUserService>();
+  auto service = std::make_shared<MyUserService>();
 
   /* Add UserController endpoints to the router of the test server */
-  runner.addController(std::make_shared<UserController>(myUserService));
+  runner.addController(std::make_shared<UserController>(service));
 
   /* Run test */
   runner.run(
@@ -36,9 +36,11 @@ void UserControllerTest::onRun()
         /* Create Test API client */
         auto client = MyApiTestClient::createShared(requestExecutor, objectMapper);
 
+        oatpp::String apiKey = "special_key";
+
         {
           auto dto = UserDTO::createShared();
-          auto response = client->createUser(dto);
+          auto response = client->createUser(apiKey, dto);
           // TODO Test validations
         }
 
@@ -46,7 +48,7 @@ void UserControllerTest::onRun()
           auto dto = UserDTO::createShared();
           auto dtos = oatpp::Vector<oatpp::Object<UserDTO>>({});
           dtos->push_back(dto);
-          auto response = client->createUsersWithArrayInput(dtos);
+          auto response = client->createUsersWithArrayInput(apiKey, dtos);
           // TODO Test validations
         }
 
@@ -55,7 +57,7 @@ void UserControllerTest::onRun()
           auto dtos = oatpp::Vector<oatpp::Object<UserDTO>>({});
           dtos->push_back(dto);
           dtos->push_back(dto);
-          auto response = client->createUsersWithListInput(dtos);
+          auto response = client->createUsersWithListInput(apiKey, dtos);
           // TODO Test validations
         }
 
