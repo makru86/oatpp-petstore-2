@@ -2,6 +2,7 @@
 #include <iostream>
 
 #include "controller/PetControllerTest.hpp"
+#include "controller/StoreControllerTest.hpp"
 #include "controller/UserControllerTest.hpp"
 #include "dto/ApiResponseDTOTest.hpp"
 #include "dto/CategoryDTOTest.hpp"
@@ -12,13 +13,17 @@
 
 void runTests()
 {
-  OATPP_RUN_TEST(UserDTOTest);
+  // DTO tests
+  OATPP_RUN_TEST(ApiResponseDTOTest);
   OATPP_RUN_TEST(CategoryDTOTest);
   OATPP_RUN_TEST(OrderDTOTest);
   OATPP_RUN_TEST(PetDTOTest);
   OATPP_RUN_TEST(TagDTOTest);
-  OATPP_RUN_TEST(ApiResponseDTOTest);
+  OATPP_RUN_TEST(UserDTOTest);
+
+  // Controller tests
   OATPP_RUN_TEST(PetControllerTest);
+  OATPP_RUN_TEST(StoreControllerTest);
   OATPP_RUN_TEST(UserControllerTest);
 }
 

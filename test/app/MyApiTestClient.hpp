@@ -43,6 +43,7 @@ class MyApiTestClient : public oatpp::web::client::ApiClient
 
   API_CALL("POST", "/store/order", placeOrder, BODY_DTO(Object<OrderDTO>, dto))
 
+  // FIXME orderId is an integer in the spec, change PATH type to Int64
   API_CALL("GET", "/store/order/{orderId}", getOrderById, PATH(String, orderId))
 
   API_CALL("DELETE", "/store/order/{orderId}", deleteOrder, PATH(String, orderId))

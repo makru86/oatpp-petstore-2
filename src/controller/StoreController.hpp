@@ -30,7 +30,7 @@ public:
   ENDPOINT("GET", "store/inventory", getInventory, BUNDLE(String, userId))
   {
     OATPP_LOGD("getInventory", "userId=%s", userId->c_str())
-    auto responseDto = m_service->getInventory(userId);
+    oatpp::UnorderedFields<oatpp::Int32> responseDto = m_service->getInventory(userId);
     return createDtoResponse(Status::CODE_200, responseDto);
   }
 
