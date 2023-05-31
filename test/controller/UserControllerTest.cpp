@@ -6,6 +6,8 @@
 #include "oatpp-test/web/ClientServerTestRunner.hpp"
 #include "oatpp/web/client/HttpRequestExecutor.hpp"
 
+UserControllerTest::UserControllerTest() : UnitTest("TEST[UserControllerTest]") {}
+
 void UserControllerTest::onRun()
 {
   /* Register test components */

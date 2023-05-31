@@ -43,30 +43,32 @@ public:
                                const oatpp::Object<PetDTO>& pet) override
   {
     OATPP_LOGD(TAG, "addPet");
-    return {};
+    return PetDTO::createShared();
   }
 
   oatpp::Object<PetDTO> updatePet(const oatpp::String& userId,
                                   const oatpp::Object<PetDTO>& pet) override
   {
-    return {};
+    return PetDTO::createShared();
   }
 
   oatpp::Vector<oatpp::Object<PetDTO>> findPetsByStatus(const oatpp::String& userId,
                                                         const oatpp::String& status) override
   {
-    return {};
+    return {PetDTO::createShared()};
   }
 
   oatpp::Vector<oatpp::Object<PetDTO>> findPetsByTags(const oatpp::String& userId,
                                                       const oatpp::String& tags) override
   {
-    return {};
+    return {PetDTO::createShared()};
   }
+
   oatpp::Object<PetDTO> getPetById(const oatpp::String& userId, const oatpp::Int64& petId) override
   {
-    return {};
+    return PetDTO::createShared();
   }
+
   //   std::shared_ptr<OutgoingResponse> updatePetWithForm(const oatpp::String& userId, const
   //  oatpp::Int64& petId, const oatpp::Object<PetForm>& form) override{}
   std::shared_ptr<OutgoingResponse> deletePet(const oatpp::String& userId,
@@ -80,6 +82,6 @@ public:
       const oatpp::String& additionalMetadata,
       std::shared_ptr<oatpp::data::stream::InputStream> file) override
   {
-    return {};
+    return ApiResponseDTO::createShared();
   }
 };
