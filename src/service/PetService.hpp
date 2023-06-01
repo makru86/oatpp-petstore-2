@@ -23,8 +23,10 @@ public:
                                                               const oatpp::String& tags) = 0;
   virtual oatpp::Object<PetDTO> getPetById(const oatpp::String& userId,
                                            const oatpp::Int64& petId) = 0;
-  //  virtual std::shared_ptr<OutgoingResponse> updatePetWithForm(const oatpp::String& userId, const
-  //  oatpp::Int64& petId, const oatpp::Object<PetForm>& form) = 0;
+  virtual std::shared_ptr<OutgoingResponse> updatePetWithForm(const oatpp::String& userId,
+                                                              const oatpp::Int64& petId,
+                                                              const oatpp::String& name,
+                                                              const oatpp::String& status) = 0;
   virtual std::shared_ptr<OutgoingResponse> deletePet(const oatpp::String& userId,
                                                       const oatpp::Int64& petId) = 0;
   virtual oatpp::Object<ApiResponseDTO> uploadFile(
@@ -69,8 +71,18 @@ public:
     return PetDTO::createShared();
   }
 
-  //   std::shared_ptr<OutgoingResponse> updatePetWithForm(const oatpp::String& userId, const
-  //  oatpp::Int64& petId, const oatpp::Object<PetForm>& form) override{}
+  std::shared_ptr<OutgoingResponse> updatePetWithForm(const oatpp::String& userId,
+                                                      const oatpp::Int64& petId,
+                                                      const oatpp::String& name,
+                                                      const oatpp::String& status) override
+  {
+    OATPP_LOGD(TAG,
+               "updatePetWithForm userId=%s, petId=%d, "
+               "name=%s, status=%s",
+               userId->c_str(), petId.getValue(0), name->c_str(), status->c_str())
+    return ResponseFactory::createResponse(Status::CODE_200);
+  }
+
   std::shared_ptr<OutgoingResponse> deletePet(const oatpp::String& userId,
                                               const oatpp::Int64& petId) override
   {

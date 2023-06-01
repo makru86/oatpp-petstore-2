@@ -109,22 +109,22 @@ public:
     return createDtoResponse(Status::CODE_200, responseDto);
   }
 
-  //  ENDPOINT_INFO(updatePetWithForm)
-  //  {
-  //    info->summary = "Updates a pet in the store with form data";
-  //    info->addResponse(Status::CODE_405, "Invalid input");
-  //    info->pathParams.add<String>("petId");
-  //    // info->security.append("petstore_auth", {"write:pets", "read:pets"});
-  //  };
-  //  ENDPOINT("POST", "/pet/{petId}", updatePetWithForm, PATH(Int32, petId),
-  // BUNDLE(String, userId),
-  // BUNDLE(Boolean, scopeReadPets), BUNDLE(Boolean, scopeWritePets))
-  //           BODY_STRING(String, dto))
-  //  {
-  //    OATPP_LOGD("updatePetWithForm", "petId=%s, dto=%s", petId->c_str(), dto->c_str());
-  //    // TODO Add your implementation here.
-  //    return createResponse(Status::CODE_200, "OK");
-  //  }
+  ENDPOINT_INFO(updatePetWithForm)
+  {
+    info->summary = "Updates a pet in the store with form data";
+    info->addResponse(Status::CODE_405, "Invalid input");
+    info->pathParams.add<String>("petId");
+    // info->security.append("petstore_auth", {"write:pets", "read:pets"});
+  };
+  ENDPOINT("POST", "/pet/{petId}", updatePetWithForm, PATH(Int64, petId), BUNDLE(String, userId),
+           BUNDLE(Boolean, scopeReadPets), BUNDLE(Boolean, scopeWritePets))
+  {
+    OATPP_LOGD("updatePetWithForm", "petId=%d", petId.getValue(0))
+    // FIXME Parse parameters from 'application/x-www-form-urlencoded' request
+    String name = "";
+    String status = "";
+    return m_service->updatePetWithForm(userId, petId, name, status);
+  }
 
   ENDPOINT_INFO(deletePet)
   {

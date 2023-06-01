@@ -95,10 +95,12 @@ void PetControllerTest::onRun()
           // TODO Test validations
         }
 
-        //       {
-        //            OATPP_LOGD(TAG, "updatePetWithForm POST:/pet/{petId}")
-        //                auto response = client->updatePetWithForm(apiKey, "id", "name", "status");
-        //      }
+        {
+          OATPP_LOGI(TAG, "updatePetWithForm POST:/pet/{petId}")
+          auto response = client->updatePetWithForm(petstoreAuth, int64_t{1});
+          OATPP_ASSERT(response->getStatusCode() == 200)
+          OATPP_LOGI(TAG, "OK")
+        }
 
         {
           OATPP_LOGD(TAG, "deletePet DELETE:/pet/{petId}")
