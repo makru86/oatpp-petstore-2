@@ -70,7 +70,7 @@ void StoreControllerTest::onRun()
 
         {
           OATPP_LOGI(TAG, "test getOrderById GET:/store/order/{orderId}...")
-          auto response = client->getOrderById("0");
+          auto response = client->getOrderById(int64_t{0});
           OATPP_ASSERT(response->getStatusCode() == 200)
           auto responseDto = response->readBodyToDto<oatpp::Object<OrderDTO>>(objectMapper);
           OATPP_ASSERT(responseDto)

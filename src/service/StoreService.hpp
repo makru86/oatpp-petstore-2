@@ -24,7 +24,7 @@ class MyStoreService : public StoreService
 public:
   oatpp::UnorderedFields<oatpp::Int32> getInventory(const oatpp::String& userId) override
   {
-    OATPP_LOGD(TAG, "getInventory userId='%s'", userId->c_str());
+    OATPP_LOGD(TAG, "getInventory userId='%s'", userId->c_str())
     return oatpp::UnorderedFields<oatpp::Int32>::createShared();
   }
 
@@ -35,6 +35,7 @@ public:
 
   oatpp::Object<OrderDTO> getOrderById(const oatpp::Int64& orderId) override
   {
+    OATPP_LOGD(TAG, "getOrderById orderId='%d'", orderId.getValue(0))
     return OrderDTO::createShared();
   }
 

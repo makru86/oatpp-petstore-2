@@ -27,24 +27,22 @@ class MyApiTestClient : public oatpp::web::client::ApiClient
   API_CALL("GET", "/pet/findByTags", findPetsByTags, AUTHORIZATION(String, authorization, "Bearer"),
            QUERY(String, tags))
 
-  API_CALL("GET", "/pet/{petId}", getPetById, HEADER(String, apiKey, "api_key"),
-           PATH(String, petId))
+  API_CALL("GET", "/pet/{petId}", getPetById, HEADER(String, apiKey, "api_key"), PATH(Int64, petId))
 
   API_CALL("POST", "/pet/{petId}", updatePetWithForm,
-           AUTHORIZATION(String, authorization, "Bearer"), PATH(String, petId))
+           AUTHORIZATION(String, authorization, "Bearer"), PATH(Int64, petId))
 
   // API_CALL("POST", "/pet/{petId}/uploadImage", uploadFile, AUTHORIZATION(String, authorization,
   // "Bearer"),PATH_PARAM(petId, "integer"), BODY_DTO(Object<UploadImageDTO>, dto))
 
   API_CALL("DELETE", "/pet/{petId}", deletePet, AUTHORIZATION(String, authorization, "Bearer"),
-           PATH(String, petId))
+           PATH(Int64, petId))
 
   API_CALL("GET", "/store/inventory", getInventory, HEADER(String, apiKey, "api_key"))
 
   API_CALL("POST", "/store/order", placeOrder, BODY_DTO(Object<OrderDTO>, dto))
 
-  // FIXME orderId is an integer in the spec, change PATH type to Int64
-  API_CALL("GET", "/store/order/{orderId}", getOrderById, PATH(String, orderId))
+  API_CALL("GET", "/store/order/{orderId}", getOrderById, PATH(Int64, orderId))
 
   API_CALL("DELETE", "/store/order/{orderId}", deleteOrder, PATH(String, orderId))
 

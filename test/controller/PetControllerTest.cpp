@@ -87,7 +87,7 @@ void PetControllerTest::onRun()
 
         {
           OATPP_LOGD(TAG, "getPetById GET:/pet/{petId}")
-          auto response = client->getPetById(apiKey, "0");
+          auto response = client->getPetById(apiKey, int64_t{1});
           OATPP_ASSERT(response->getStatusCode() == 200)
           auto responseDto = response->readBodyToDto<oatpp::Object<PetDTO>>(objectMapper);
           OATPP_ASSERT(responseDto)
@@ -102,7 +102,7 @@ void PetControllerTest::onRun()
 
         {
           OATPP_LOGD(TAG, "deletePet DELETE:/pet/{petId}")
-          auto response = client->deletePet(petstoreAuth, "0");
+          auto response = client->deletePet(petstoreAuth, int64_t{0});
           OATPP_ASSERT(response->getStatusCode() == 200)
           // TODO Test validations
         }
