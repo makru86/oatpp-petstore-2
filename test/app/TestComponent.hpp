@@ -1,8 +1,8 @@
 #ifndef TestComponent_htpp
 #define TestComponent_htpp
 
-#include "auth/ApiKeyAuth.hpp"
-#include "auth/OAuth2.hpp"
+#include "generated/auth/ApiKeyAuth.hpp"
+#include "generated/auth/OAuth2.hpp"
 #include "oatpp/core/macro/component.hpp"
 #include "oatpp/network/virtual_/Interface.hpp"
 #include "oatpp/network/virtual_/client/ConnectionProvider.hpp"

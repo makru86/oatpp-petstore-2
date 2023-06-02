@@ -1,6 +1,6 @@
 #include "UserDTOTest.hpp"
 
-#include "dto/UserDTO.hpp"
+#include "generated/dto/UserDTO.hpp"
 #include "oatpp/parser/json/mapping/ObjectMapper.hpp"
 
 void UserDTOTest::onRun()

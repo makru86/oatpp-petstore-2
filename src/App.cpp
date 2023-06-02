@@ -1,10 +1,13 @@
 #include <iostream>
 
-#include "./AppComponent.hpp"
-#include "./controller/PetController.hpp"
-#include "./controller/StoreController.hpp"
-#include "./controller/UserController.hpp"
+#include "AppComponent.hpp"
+#include "generated/controller/PetController.hpp"
+#include "generated/controller/StoreController.hpp"
+#include "generated/controller/UserController.hpp"
 #include "oatpp/network/Server.hpp"
+#include "service/MyPetService.hpp"
+#include "service/MyStoreService.hpp"
+#include "service/MyUserService.hpp"
 
 void run()
 {

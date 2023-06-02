@@ -1,8 +1,8 @@
 #pragma once
 
-#include "auth/OAuth2.hpp"
-#include "dto/ApiResponseDTO.hpp"
-#include "dto/PetDTO.hpp"
+#include "generated/auth/OAuth2.hpp"
+#include "generated/dto/ApiResponseDTO.hpp"
+#include "generated/dto/PetDTO.hpp"
 #include "oatpp/core/macro/codegen.hpp"
 #include "oatpp/core/macro/component.hpp"
 #include "oatpp/web/mime/multipart/FileProvider.hpp"
@@ -12,7 +12,7 @@
 #include "oatpp/web/protocol/http/outgoing/MultipartBody.hpp"
 #include "oatpp/web/protocol/http/outgoing/StreamingBody.hpp"
 #include "oatpp/web/server/api/ApiController.hpp"
-#include "service/PetService.hpp"
+#include "generated/service/PetService.hpp"
 
 #include OATPP_CODEGEN_BEGIN(ApiController)
 

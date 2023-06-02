@@ -1,6 +1,6 @@
 #include "ApiResponseDTOTest.hpp"
 
-#include "dto/ApiResponseDTO.hpp"
+#include "generated/dto/ApiResponseDTO.hpp"
 #include "oatpp/parser/json/mapping/ObjectMapper.hpp"
 
 void ApiResponseDTOTest::onRun()

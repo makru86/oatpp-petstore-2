@@ -1,6 +1,6 @@
 #include "CategoryDTOTest.hpp"
 
-#include "dto/CategoryDTO.hpp"
+#include "generated/dto/CategoryDTO.hpp"
 #include "oatpp/parser/json/mapping/ObjectMapper.hpp"
 
 void CategoryDTOTest::onRun()

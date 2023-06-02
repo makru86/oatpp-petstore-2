@@ -1,6 +1,6 @@
 #include "OrderDTOTest.hpp"
 
-#include "dto/OrderDTO.hpp"
+#include "generated/dto/OrderDTO.hpp"
 #include "oatpp/parser/json/mapping/ObjectMapper.hpp"
 
 void OrderDTOTest::onRun()

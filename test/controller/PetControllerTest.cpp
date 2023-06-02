@@ -2,9 +2,10 @@
 
 #include "app/MyApiTestClient.hpp"
 #include "app/TestComponent.hpp"
-#include "controller/PetController.hpp"
+#include "generated/controller/PetController.hpp"
 #include "oatpp-test/web/ClientServerTestRunner.hpp"
 #include "oatpp/web/client/HttpRequestExecutor.hpp"
+#include "service/MyPetService.hpp"
 
 PetControllerTest::PetControllerTest() : UnitTest("TEST[PetControllerTest]") {}
 

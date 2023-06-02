@@ -1,6 +1,6 @@
 #include "TagDTOTest.hpp"
 
-#include "dto/TagDTO.hpp"
+#include "generated/dto/TagDTO.hpp"
 #include "oatpp/parser/json/mapping/ObjectMapper.hpp"
 
 void TagDTOTest::onRun()

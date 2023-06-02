@@ -2,9 +2,10 @@
 
 #include "app/MyApiTestClient.hpp"
 #include "app/TestComponent.hpp"
-#include "controller/StoreController.hpp"
+#include "generated/controller/StoreController.hpp"
 #include "oatpp-test/web/ClientServerTestRunner.hpp"
 #include "oatpp/web/client/HttpRequestExecutor.hpp"
+#include "service/MyStoreService.hpp"
 
 StoreControllerTest::StoreControllerTest() : UnitTest("TEST[StoreControllerTest]") {}
 

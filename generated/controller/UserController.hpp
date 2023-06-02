@@ -1,11 +1,11 @@
 #pragma once
 
-#include "dto/UserDTO.hpp"
+#include "generated/dto/UserDTO.hpp"
 #include "oatpp/core/async/Coroutine.hpp"
 #include "oatpp/core/macro/codegen.hpp"
 #include "oatpp/core/macro/component.hpp"
 #include "oatpp/web/server/api/ApiController.hpp"
-#include "service/UserService.hpp"
+#include "generated/service/UserService.hpp"
 
 #include OATPP_CODEGEN_BEGIN(ApiController)
 
@@ -13,7 +13,7 @@ class UserController : public oatpp::web::server::api::ApiController
 {
   std::shared_ptr<UserService> m_service;
 
-  // FIXME move somewhere, like src/Common.hpp
+  // FIXME move somewhere, like Common.hpp
   oatpp::String protectByAsterisks(const oatpp::String& secret)
   {
     if (!secret) {

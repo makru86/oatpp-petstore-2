@@ -68,10 +68,15 @@ See more:
 
 ```
 |- CMakeLists.txt                        // projects CMakeLists.txt
+|- generated/
+|    |
+|    |- controller/                      // Folder containing controllers where all endpoints are declared
+|    |- dto/                             // DTOs are declared here
+|    |- service/                         // Service interfaces
+|
 |- src/
 |    |
-|    |- controller/                      // Folder containing MyController where all endpoints are declared
-|    |- dto/                             // DTOs are declared here
+|    |- service/                         // Service imlementations
 |    |- AppComponent.hpp                 // Service config
 |    |- App.cpp                          // main() is here
 |

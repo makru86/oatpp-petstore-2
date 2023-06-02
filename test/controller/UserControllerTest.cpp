@@ -2,9 +2,10 @@
 
 #include "app/MyApiTestClient.hpp"
 #include "app/TestComponent.hpp"
-#include "controller/UserController.hpp"
+#include "generated/controller/UserController.hpp"
 #include "oatpp-test/web/ClientServerTestRunner.hpp"
 #include "oatpp/web/client/HttpRequestExecutor.hpp"
+#include "service/MyUserService.hpp"
 
 UserControllerTest::UserControllerTest() : UnitTest("TEST[UserControllerTest]") {}
 

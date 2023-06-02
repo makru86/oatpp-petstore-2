@@ -1,6 +1,6 @@
 #pragma once
 
-#include "dto/DTOs.hpp"
+#include "generated/dto/DTOs.hpp"
 #include "oatpp/core/macro/codegen.hpp"
 #include "oatpp/web/client/ApiClient.hpp"
 

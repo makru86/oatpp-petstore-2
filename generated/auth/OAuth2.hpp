@@ -32,7 +32,7 @@ public:
    */
   explicit OAuth2Handler(const oatpp::String& realm) : BearerAuthorizationHandler(realm) {}
 
-  // FIXME move somewhere, like src/Common.hpp
+  // FIXME move somewhere, like Common.hpp
   oatpp::String protectByAsterisks(const oatpp::String& secret)
   {
     if (!secret) {

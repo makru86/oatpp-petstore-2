@@ -1,6 +1,6 @@
 #include "PetDTOTest.hpp"
 
-#include "dto/PetDTO.hpp"
+#include "generated/dto/PetDTO.hpp"
 #include "oatpp/parser/json/mapping/ObjectMapper.hpp"
 
 void PetDTOTest::onRun()

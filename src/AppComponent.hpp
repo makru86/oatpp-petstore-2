@@ -1,8 +1,8 @@
 #ifndef AppComponent_hpp
 #define AppComponent_hpp
 
-#include "auth/ApiKeyAuth.hpp"
-#include "auth/OAuth2.hpp"
+#include "generated/auth/ApiKeyAuth.hpp"
+#include "generated/auth/OAuth2.hpp"
 #include "oatpp/core/macro/component.hpp"
 #include "oatpp/network/tcp/server/ConnectionProvider.hpp"
 #include "oatpp/parser/json/mapping/ObjectMapper.hpp"
