@@ -46,14 +46,6 @@ Anonymous endpoints:
 - "GET", "/user/login"
 - "GET", "/user/{username}"
 
-## CURL test
-
-Build and start server, then test it with the script:
-
-```
-./utility/test.sh
-```
-
 # Oat++ starter
 
 See more:
@@ -81,7 +73,11 @@ See more:
 |    |- App.cpp                          // main() is here
 |
 |- test/                                 // test folder
-|- utility/install-oatpp-modules.sh      // utility script to install required oatpp-modules.  
+|
+|- utility/
+|    |
+|    |- install-oatpp-modules.sh         // utility script to install required oatpp-modules
+|    |- test.sh                          // curl tests suite
 ```
 
 ---
@@ -90,15 +86,15 @@ See more:
 
 #### Using CMake
 
-**Requires** 
+**Requires**
 
-- `oatpp` module installed. You may run `utility/install-oatpp-modules.sh` 
+- `oatpp` module installed. You may run `utility/install-oatpp-modules.sh`
 script to install required oatpp modules.
 
 ```
 $ mkdir build && cd build
 $ cmake ..
-$ make 
+$ make
 $ ./my-project-exe  # - run application.
 
 ```
