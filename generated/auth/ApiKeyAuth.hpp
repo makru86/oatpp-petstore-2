@@ -72,8 +72,8 @@ public:
                     const oatpp::String& apiKeyHeaderName)
     : m_apiKeyAuthHandler(authHandler), m_apiKeyHeaderName(apiKeyHeaderName)
   {
-    // Route property is true if apiKey is required.
-    bool apiKey = true;
+    // Route property is true if apiKeyAuth is required.
+    bool apiKeyAuth = true;
 
     // In oatpp the most specific routes should come first.
     // The order matters:
@@ -81,29 +81,29 @@ public:
     //    GET /pet/{petId}
     //    GET /*            <- this should be the last one
 
-    m_authEndpoints.route("GET", "/pet/findByStatus", not apiKey);
-    m_authEndpoints.route("GET", "/pet/findByTags", not apiKey);
-    m_authEndpoints.route("GET", "/pet/{petId}", apiKey);
-    m_authEndpoints.route("GET", "/store/inventory", apiKey);
-    m_authEndpoints.route("GET", "/store/order/{orderId}", not apiKey);
-    m_authEndpoints.route("GET", "/user/login", not apiKey);
-    m_authEndpoints.route("GET", "/user/logout", apiKey);
-    m_authEndpoints.route("GET", "/user/{username}", not apiKey);
+    m_authEndpoints.route("GET", "/pet/findByStatus", false);
+    m_authEndpoints.route("GET", "/pet/findByTags", false);
+    m_authEndpoints.route("GET", "/pet/{petId}", apiKeyAuth);
+    m_authEndpoints.route("GET", "/store/inventory", apiKeyAuth);
+    m_authEndpoints.route("GET", "/store/order/{orderId}", false);
+    m_authEndpoints.route("GET", "/user/login", false);
+    m_authEndpoints.route("GET", "/user/logout", apiKeyAuth);
+    m_authEndpoints.route("GET", "/user/{username}", false);
 
-    m_authEndpoints.route("POST", "/pet/{petId}/uploadImage", not apiKey);
-    m_authEndpoints.route("POST", "/pet/{petId}", not apiKey);
-    m_authEndpoints.route("POST", "/pet", not apiKey);
-    m_authEndpoints.route("POST", "/store/order", not apiKey);
-    m_authEndpoints.route("POST", "/user/createWithArray", apiKey);
-    m_authEndpoints.route("POST", "/user/createWithList", apiKey);
-    m_authEndpoints.route("POST", "/user", apiKey);
+    m_authEndpoints.route("POST", "/pet/{petId}/uploadImage", false);
+    m_authEndpoints.route("POST", "/pet/{petId}", false);
+    m_authEndpoints.route("POST", "/pet", false);
+    m_authEndpoints.route("POST", "/store/order", false);
+    m_authEndpoints.route("POST", "/user/createWithArray", apiKeyAuth);
+    m_authEndpoints.route("POST", "/user/createWithList", apiKeyAuth);
+    m_authEndpoints.route("POST", "/user", apiKeyAuth);
 
-    m_authEndpoints.route("PUT", "/pet", not apiKey);
-    m_authEndpoints.route("PUT", "/user/{username}", apiKey);
+    m_authEndpoints.route("PUT", "/pet", false);
+    m_authEndpoints.route("PUT", "/user/{username}", apiKeyAuth);
 
-    m_authEndpoints.route("DELETE", "/pet/{petId}", not apiKey);
-    m_authEndpoints.route("DELETE", "/store/order/{orderId}", not apiKey);
-    m_authEndpoints.route("DELETE", "/user/{username}", apiKey);
+    m_authEndpoints.route("DELETE", "/pet/{petId}", false);
+    m_authEndpoints.route("DELETE", "/store/order/{orderId}", false);
+    m_authEndpoints.route("DELETE", "/user/{username}", apiKeyAuth);
   }
 
   std::shared_ptr<OutgoingResponse> intercept(
